@@ -1,11 +1,9 @@
 class Button {
   PFont textFont;
 
-  //--MEMBER VARIABLES--//
   int x, y, buttonWidth, buttonHeight, textSize, transparency;
   String text;
   color strokeColor, fillColor, textColor; 
-  //--VARIABLES--//
 
   Button(int X, int Y, int W, int H, String T) {
     x = X - W / 2;
@@ -42,7 +40,7 @@ class Button {
     strokeWeight(2.5);
     stroke(strokeColor, transparency);
     fill(fillColor, transparency);
-    rect (x, y, buttonWidth, buttonHeight, (buttonWidth-buttonHeight/2)/10);
+    rect (x, y, buttonWidth, buttonHeight, (buttonWidth - buttonHeight / 2) / 10);
 
 
     fill(textColor, transparency);
@@ -50,7 +48,7 @@ class Button {
     textFont = loadFont("AgencyFB-Bold-48.vlw");
     textFont (textFont);
     textSize(textSize);
-    text (text, x+buttonWidth/2, y+buttonHeight/2);
+    text (text, x + buttonWidth / 2, y + buttonHeight / 2);
   }
 
   boolean mouseInside() {
