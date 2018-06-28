@@ -1,67 +1,48 @@
-class Button {
-  PFont textFont;
-
-  //--MEMBER VARIABLES--//
-  int x, y, buttonWidth, buttonHeight, textSize, transparency;
-  String text;
-  color strokeColor, fillColor, textColor; 
-  //--VARIABLES--//
+class Button extends Box {
 
   Button(int X, int Y, int W, int H, String T) {
-    x = X - W / 2;
-    y = Y - H / 2;
-    buttonWidth = W;
-    buttonHeight = H;
-    text = T;
-    textSize = buttonWidth / text.length();
+    super(X, Y, W, H, T);
   }
 
-  void buttonColor(color s, color f, color t) {
-    strokeColor = s;
-    fillColor = f;
-    textColor = t;
-  }
-
-  void dinamicColorChange(color a1, color a2, color a3, color b1, color b2, color b3, color c1, color c2, color c3, int tra) {
-    transparency = tra;
+  int changeDynamicColors() {
     if (mouseInside()) {
-      if (buttonClicked()) {
-        buttonColor(a1, a2, a3);
-        if (tra == 200) {
-          transparency = 100;
-        }
+      if (selfClicked()) {
+        return 0;
       } else {
-        buttonColor(b1, b2, b3);
+        return 1;
       }
     } else {
-      buttonColor(c1, c2, c3);
+      return 2;
     }
   }
 
-  void show() {
+  void show(int transparency) {
+    this.transparency = transparency;
+    int buttonColors = changeDynamicColors();
+
     strokeWeight(2.5);
-    stroke(strokeColor, transparency);
-    fill(fillColor, transparency);
-    rect (x, y, buttonWidth, buttonHeight, (buttonWidth-buttonHeight/2)/10);
+    stroke(strokeColor[buttonColors], transparency);
+    fill(fillColor[buttonColors], transparency);
+    rect (x, y, selfWidth, selfHeight, (selfWidth - selfHeight / 2) / 10);
 
 
-    fill(textColor, transparency);
+    fill(textColor[buttonColors], transparency);
     textAlign(CENTER, CENTER);
     textFont = loadFont("AgencyFB-Bold-48.vlw");
     textFont (textFont);
     textSize(textSize);
-    text (text, x+buttonWidth/2, y+buttonHeight/2);
+    text (text, x, y);
   }
 
   boolean mouseInside() {
-    if ((mouseX < x + buttonWidth && mouseX > x) && (mouseY < y + buttonHeight && mouseY > y)) {
+    if ((mouseX < x + selfWidth / 2 && mouseX > x - selfWidth / 2) && (mouseY < y + selfHeight / 2 && mouseY > y - selfHeight / 2)) {
       return true;
     } else {
       return false;
     }
   }
 
-  boolean buttonClicked() {
+  boolean selfClicked() {
     if (mouseInside() && mousePressed) {
       return true;
     } else {
