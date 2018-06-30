@@ -9,32 +9,34 @@ Button easyMode;
 Button normalMode;
 Button hardMode;
 
-boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false;
+Key[] p = new Key[60];
+
+boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false, startMenuOpened = false;
 int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, transitionSpeed = 30; 
 
 void mainMenu() {
-  start.show(mainMenuVisibility);
+  start.show(mainMenuVisibility, start.changeDynamicColors());
   startButton();
 
   settings.y =  height/2;
-  settings.show(mainMenuVisibility);
+  settings.show(mainMenuVisibility, settings.changeDynamicColors());
   settingsButton();
 
-  progress.show(mainMenuVisibility);
+  progress.show(mainMenuVisibility, progress.changeDynamicColors());
   progressButton();
 }
 
 void backMenu() {
-  backToMenu.show(backMenuVisibility);
+  backToMenu.show(backMenuVisibility, backToMenu.changeDynamicColors());
   backToMenuButton();
 }
 
 void settingsMenu() {
   settings.y =  height/2-200;
-  settings.show(settingsMenuVisibility);
-  easyMode.show(settingsMenuVisibility);
-  normalMode.show(settingsMenuVisibility);
-  hardMode.show(settingsMenuVisibility);
+  settings.show(settingsMenuVisibility, settings.changeDynamicColors());
+  easyMode.show(settingsMenuVisibility, easyMode.changeDynamicColors());
+  normalMode.show(settingsMenuVisibility, normalMode.changeDynamicColors());
+  hardMode.show(settingsMenuVisibility, hardMode.changeDynamicColors());
 }
 
 void closeButton() {
@@ -49,6 +51,7 @@ void startButton() {
     mainMenuOpened = false;
     settingsMenuOpened = false;
     backMenuOpened = true;
+    startMenuOpened = true;
   }
 }
 void settingsButton() {
@@ -57,6 +60,7 @@ void settingsButton() {
     mainMenuOpened = false;
     settingsMenuOpened = true;
     backMenuOpened = true;
+    startMenuOpened = false;
   }
 }
 void progressButton() {
@@ -65,6 +69,7 @@ void progressButton() {
     mainMenuOpened = false;
     settingsMenuOpened = false;
     backMenuOpened = true;
+    startMenuOpened = false;
   }
 }
 void backToMenuButton() {
@@ -73,6 +78,7 @@ void backToMenuButton() {
     mainMenuOpened = true;
     settingsMenuOpened = false;
     backMenuOpened = false;
+    startMenuOpened = false;
   }
 }
 
@@ -98,12 +104,27 @@ void setup() {
   normalMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
   hardMode = new Button(width/2, height/2+82, 250, 75, "HardMode"); 
   hardMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+
+  int a = 60, x = 0, z = 50;
+  for (int i = 0; i < 60; i++) {
+    if (x < width-100) {
+      x += 60;
+      if (z < height-100 && x >= width-200) {
+        z += 60;
+      }
+    } else {
+      x = 50;
+    }
+    a++;
+    p[i] = new Key(x, z, 50, 50, str(char(a)));
+    p[i].setDynamicColors(200, 100, 150, 50, 150, 200, 150, 200, 50);
+  }
 }
 
 void draw() {
   background(#ADF6FF);
 
-  close.show(300);
+  close.show(300, close.changeDynamicColors());
   closeButton();
 
   if (mainMenuOpened && mainMenuVisibility != 300 && backMenuVisibility == 0) {
@@ -119,6 +140,12 @@ void draw() {
     backMenuVisibility -= transitionSpeed;
     if (!settingsMenuOpened && settingsMenuVisibility != 0) {
       settingsMenuVisibility -= transitionSpeed;
+    }
+  }
+
+  if (startMenuOpened) {
+    for (int i = 0; i < 60; i++) {
+      p[i].show(300);
     }
   }
 

@@ -27,4 +27,21 @@ class Box {
     textColor[1] = text_2;
     textColor[2] = text_3;
   }
+
+  void show(int transparency, int CC) {
+    this.transparency = transparency;
+
+    strokeWeight(2.5);
+    stroke(strokeColor[CC], transparency);
+    fill(fillColor[CC], transparency);
+    rect (x, y, selfWidth, selfHeight, (selfWidth - selfHeight / 2) / 10);
+
+
+    fill(textColor[CC], transparency);
+    textAlign(CENTER, CENTER);
+    textFont = loadFont("AgencyFB-Bold-48.vlw");
+    textFont (textFont);
+    textSize(textSize);
+    text (text, x, y);
+  }
 }

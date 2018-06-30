@@ -6,7 +6,7 @@ class Key extends Box {
 
   int changeDynamicColors() {
     if (keyPressed) {
-      if (true || false) {
+      if (key == text.charAt(0)) {
         return 0;
       } else {
         return 1;
@@ -34,18 +34,21 @@ class Key extends Box {
     text (text, x, y);
   }
 
-  boolean selfPressed() {
-    if (keyPressed) {
-      if (key == CODED && text.length() > 1) {
-        if (keyCode == 0 && text == "spazio") {
-          return true;
-        }
-      } else if ((key == text.charAt(0) && text.length() == 1) || ((key == ENTER || key == RETURN) && text == "invio") || (key == BACKSPACE && text == "<--")) {
-        return true;
-      } else {
-        return false;
-      }
-    } 
-    return false;
-  }
+  //boolean selfPressed() {
+  //  if (keyPressed) {
+  //    if (key == CODED) {
+  //      if (keyCode == 0 && text == "spazio") {
+  //        return true;
+  //      } else {
+  //        return false;
+  //      }
+  //    } else if ((key == text.charAt(0) && text.length() == 1) || ((key == ENTER || key == RETURN) && text == "invio") || (key == BACKSPACE && text == "<--")) {
+  //      return true;
+  //    } else {
+  //      return false;
+  //    }
+  //  } else {
+  //    return false;
+  //  }
+  //}
 }
