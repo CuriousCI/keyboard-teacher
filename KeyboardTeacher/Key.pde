@@ -15,22 +15,4 @@ class Key extends Box {
       return 1;
     }
   }
-
-  void show(int transparency) {
-    this.transparency = transparency;
-    int keyColors = changeDynamicColors();
-
-    strokeWeight(2.5);
-    stroke(strokeColor[keyColors], transparency);
-    fill(fillColor[keyColors], transparency);
-    rect (x, y, selfWidth, selfHeight, (selfWidth - selfHeight / 2) / 10);
-
-
-    fill(textColor[keyColors], transparency);
-    textAlign(CENTER, CENTER);
-    textFont = loadFont("AgencyFB-Bold-48.vlw");
-    textFont (textFont);
-    textSize(textSize);
-    text (text, x, y);
-  }
 }

@@ -82,6 +82,24 @@ void backToMenuButton() {
   }
 }
 
+void changeVisibility() {
+  if (mainMenuOpened && mainMenuVisibility != 300 && backMenuVisibility == 0) {
+    mainMenuVisibility += transitionSpeed;
+  } else if (!mainMenuOpened && mainMenuVisibility != 0 && backMenuVisibility == 0) {
+    mainMenuVisibility -= transitionSpeed;
+  } else if (!mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 300) {
+    backMenuVisibility += transitionSpeed;
+    if (settingsMenuOpened && settingsMenuVisibility != 300) {
+      settingsMenuVisibility += transitionSpeed;
+    }
+  } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
+    backMenuVisibility -= transitionSpeed;
+    if (!settingsMenuOpened && settingsMenuVisibility != 0) {
+      settingsMenuVisibility -= transitionSpeed;
+    }
+  }
+}
+
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
   rectMode(CENTER);
@@ -105,7 +123,7 @@ void setup() {
   hardMode = new Button(width/2, height/2+82, 250, 75, "HardMode"); 
   hardMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
-  int a = 60, x = 0, z = 50;
+  int a = 60, x = 0, z = 120;
   for (int i = 0; i < 60; i++) {
     if (x < width-200) {
       x += 60;
@@ -127,25 +145,11 @@ void draw() {
   close.show(300, close.changeDynamicColors());
   closeButton();
 
-  if (mainMenuOpened && mainMenuVisibility != 300 && backMenuVisibility == 0) {
-    mainMenuVisibility += transitionSpeed;
-  } else if (!mainMenuOpened && mainMenuVisibility != 0 && backMenuVisibility == 0) {
-    mainMenuVisibility -= transitionSpeed;
-  } else if (!mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 300) {
-    backMenuVisibility += transitionSpeed;
-    if (settingsMenuOpened && settingsMenuVisibility != 300) {
-      settingsMenuVisibility += transitionSpeed;
-    }
-  } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
-    backMenuVisibility -= transitionSpeed;
-    if (!settingsMenuOpened && settingsMenuVisibility != 0) {
-      settingsMenuVisibility -= transitionSpeed;
-    }
-  }
+  changeVisibility();
 
-  if (startMenuOpened) {
+  if (startMenuOpened && mainMenuVisibility == 0) {
     for (int i = 0; i < 60; i++) {
-      p[i].show(300);
+      p[i].show(300, p[i].changeDynamicColors());
     }
   }
 
