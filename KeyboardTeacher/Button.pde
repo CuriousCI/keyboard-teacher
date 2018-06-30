@@ -6,7 +6,7 @@ class Button extends Box {
 
   int changeDynamicColors() {
     if (mouseInside()) {
-      if (selfClicked()) {
+      if (selfClicked(true)) {
         return 0;
       } else {
         return 1;
@@ -16,8 +16,6 @@ class Button extends Box {
     }
   }
 
-
-
   boolean mouseInside() {
     if ((mouseX < x + selfWidth / 2 && mouseX > x - selfWidth / 2) && (mouseY < y + selfHeight / 2 && mouseY > y - selfHeight / 2)) {
       return true;
@@ -26,8 +24,8 @@ class Button extends Box {
     }
   }
 
-  boolean selfClicked() {
-    if (mouseInside() && mousePressed) {
+  boolean selfClicked(boolean activated) {
+    if (mouseInside() && mousePressed && activated) {
       return true;
     } else {
       return false;

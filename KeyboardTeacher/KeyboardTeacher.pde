@@ -40,13 +40,13 @@ void settingsMenu() {
 }
 
 void closeButton() {
-  if (close.selfClicked()) {
+  if (close.selfClicked(true)) {
     delay(100);
     exit();
   }
 }
 void startButton() {
-  if (start.selfClicked()) {
+  if (start.selfClicked(mainMenuOpened)) {
     delay(100);
     mainMenuOpened = false;
     settingsMenuOpened = false;
@@ -55,7 +55,7 @@ void startButton() {
   }
 }
 void settingsButton() {
-  if (settings.selfClicked()) {
+  if (settings.selfClicked(mainMenuOpened)) {
     delay(100);
     mainMenuOpened = false;
     settingsMenuOpened = true;
@@ -64,7 +64,7 @@ void settingsButton() {
   }
 }
 void progressButton() {
-  if (progress.selfClicked()) {
+  if (progress.selfClicked(mainMenuOpened)) {
     delay(100);
     mainMenuOpened = false;
     settingsMenuOpened = false;
@@ -73,7 +73,7 @@ void progressButton() {
   }
 }
 void backToMenuButton() {
-  if (backToMenu.selfClicked()) {
+  if (backToMenu.selfClicked(!mainMenuOpened)) {
     delay(100);
     mainMenuOpened = true;
     settingsMenuOpened = false;
@@ -107,9 +107,9 @@ void setup() {
 
   int a = 60, x = 0, z = 50;
   for (int i = 0; i < 60; i++) {
-    if (x < width-100) {
+    if (x < width-200) {
       x += 60;
-      if (z < height-100 && x >= width-200) {
+      if (z < height-100 && x >= width-210) {
         z += 60;
       }
     } else {
