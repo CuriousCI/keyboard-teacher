@@ -9,7 +9,7 @@ Button easyMode;
 Button normalMode;
 Button hardMode;
 
-Key[] p = new Key[60];
+Key[] p = new Key[80];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false, startMenuOpened = false;
 int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, transitionSpeed = 30; 
@@ -33,7 +33,7 @@ void backMenu() {
 
 void settingsMenu() {
   settings.y =  height/2-200;
-  settings.show(settingsMenuVisibility, settings.changeDynamicColors());
+  settings.show(settingsMenuVisibility, /*settings.changeDynamicColors()*/ 2);
   easyMode.show(settingsMenuVisibility, easyMode.changeDynamicColors());
   normalMode.show(settingsMenuVisibility, normalMode.changeDynamicColors());
   hardMode.show(settingsMenuVisibility, hardMode.changeDynamicColors());
@@ -123,15 +123,15 @@ void setup() {
   hardMode = new Button(width/2, height/2+82, 250, 75, "HardMode"); 
   hardMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
-  int a = 60, x = 0, z = 120;
-  for (int i = 0; i < 60; i++) {
+  int a = 40, x = 0, z = 450;
+  for (int i = 0; i < 80; i++) {
     if (x < width-200) {
       x += 60;
       if (z < height-100 && x >= width-210) {
         z += 60;
       }
     } else {
-      x = 50;
+      x = 60;
     }
     a++;
     p[i] = new Key(x, z, 50, 50, str(char(a)));
@@ -148,7 +148,7 @@ void draw() {
   changeVisibility();
 
   if (startMenuOpened && mainMenuVisibility == 0) {
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < 80; i++) {
       p[i].show(300, p[i].changeDynamicColors());
     }
   }
