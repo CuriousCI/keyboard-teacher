@@ -12,6 +12,8 @@ class Box {
     selfHeight = H;
     text = T;
     textSize = selfWidth / text.length();
+    textAlign(CENTER, CENTER);
+    textFont = loadFont("AgencyFB-Bold-48.vlw");
   }
 
   void setDynamicColors(color stroke_1, color fill_1, color text_1, color stroke_2, color fill_2, color text_2, color stroke_3, color fill_3, color text_3) {
@@ -41,8 +43,6 @@ class Box {
 
 
     fill(textColor[setOfColors], transparency);
-    textAlign(CENTER, CENTER);
-    textFont = loadFont("AgencyFB-Bold-48.vlw");
     textFont (textFont);
     textSize(textSize);
     text (text, x, y);
