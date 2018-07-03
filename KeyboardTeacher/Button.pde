@@ -6,7 +6,7 @@ class Button extends Box {
 
   int changeDynamicColors() {
     if (mouseInside()) {
-      if (selfClicked()) {
+      if (selfClicked(true)) {
         return 0;
       } else {
         return 1;
@@ -14,24 +14,6 @@ class Button extends Box {
     } else {
       return 2;
     }
-  }
-
-  void show(int transparency) {
-    this.transparency = transparency;
-    int buttonColors = changeDynamicColors();
-
-    strokeWeight(2.5);
-    stroke(strokeColor[buttonColors], transparency);
-    fill(fillColor[buttonColors], transparency);
-    rect (x, y, selfWidth, selfHeight, (selfWidth - selfHeight / 2) / 10);
-
-
-    fill(textColor[buttonColors], transparency);
-    textAlign(CENTER, CENTER);
-    textFont = loadFont("AgencyFB-Bold-48.vlw");
-    textFont (textFont);
-    textSize(textSize);
-    text (text, x, y);
   }
 
   boolean mouseInside() {
@@ -42,8 +24,8 @@ class Button extends Box {
     }
   }
 
-  boolean selfClicked() {
-    if (mouseInside() && mousePressed) {
+  boolean selfClicked(boolean activated) {
+    if (mouseInside() && mousePressed && activated) {
       return true;
     } else {
       return false;
