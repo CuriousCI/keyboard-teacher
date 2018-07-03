@@ -12,7 +12,6 @@ class Box {
     selfHeight = H;
     text = T;
     textSize = selfWidth / text.length();
-    textAlign(CENTER, CENTER);
     textFont = loadFont("AgencyFB-Bold-48.vlw");
   }
 

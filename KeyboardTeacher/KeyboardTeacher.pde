@@ -114,6 +114,7 @@ void changeMenuVisibility() { // Function switching from a menu to another
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
   rectMode(CENTER);
+  textAlign(CENTER, CENTER);
 
   start = new Button(width/2, height/2-82, 250, 75, "Start"); 
   start.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
