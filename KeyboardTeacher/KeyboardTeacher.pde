@@ -9,7 +9,7 @@ Button easyMode;
 Button normalMode;
 Button hardMode;
 
-Key[] keyBoard = new Key[80];
+Key[] keyBoard = new Key[116];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false, startMenuOpened = false;
 int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, transitionSpeed = 30; 
@@ -135,19 +135,17 @@ void setup() {
   hardMode = new Button(width/2, height/2+82, 250, 75, "HardMode"); 
   hardMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
-  int keyText = 40, keyX = 0, keyY = 450;
-  for (int i = 0; i < 80; i++) {
-    if (keyX < width-200) {
-      keyX += 60;
-      if (keyY < height-100 && keyX >= width-210) {
-        keyY += 60;
-      }
-    } else {
-      keyX = 60;
-    }
-    keyText++;
-    keyBoard[i] = new Key(keyX, keyY, 50, 50, str(char(keyText)));
-    keyBoard[i].setDynamicColors(200, 100, 150, 50, 150, 200, 150, 200, 50);
+  String[] keys = loadStrings("Keys.txt");
+
+  for (int i = 0; i < 116; i++) {
+    int spaceOne = keys[i].indexOf(" ");
+    int spaceTwo = keys[i].indexOf(" ", spaceOne + 1);
+    int keyX = int(keys[i].substring(spaceOne + 1, spaceTwo)) * 60 + 100, 
+      keyY = int(keys[i].substring(spaceTwo + 1, keys[i].length() - 1)) * 60 + 400;
+    String keyText = keys[i].substring(0, spaceOne);
+
+    keyBoard[i] = new Key(keyX, keyY, 50, 50, keyText);
+    keyBoard[i].setDynamicColors(255, 200, 230, 100, 150, 90, 0, 20, 50);
   }
 }
 
@@ -160,8 +158,14 @@ void draw() {
   changeMenuVisibility();
 
   if (startMenuOpened && mainMenuVisibility == 0) {
-    for (int i = 0; i < 80; i++) {
-      keyBoard[i].show(300, keyBoard[i].changeDynamicColors());
+    if (keyPressed && keyCode == SHIFT) {
+      for (int i = 0; i < 116; i++) {
+        keyBoard[i].show(300, keyBoard[i].changeDynamicColors());
+      }
+    } else {
+      for (int i = 115; i >= 0; i--) {
+        keyBoard[i].show(300, keyBoard[i].changeDynamicColors());
+      }
     }
   }
 
