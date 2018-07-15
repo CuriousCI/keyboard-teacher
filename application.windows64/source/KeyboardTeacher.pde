@@ -1,7 +1,3 @@
-Box keyboard; //<>//
-Box textToWrite;
-Box indicators;
-
 Button start;
 Button settings;
 Button progress;
@@ -13,10 +9,10 @@ Button easyMode;
 Button normalMode;
 Button hardMode;
 
-Key[] keysOfKeyboard = new Key[117];
+Key[] keysOfKeyboard = new Key[116];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false, startMenuOpened = false;
-int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, startMenuVisibility = 0, transitionSpeed = 30; 
+int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, transitionSpeed = 30; 
 
 void mainMenu() {
   start.show(mainMenuVisibility, start.changeDynamicColors());
@@ -44,32 +40,10 @@ void settingsMenu() {
   settings.selfWidth = 300;
   settings.selfHeight = 90;
 
-  settings.show(settingsMenuVisibility, /*settings.changeDynamicColors()*/ 0);
+  settings.show(settingsMenuVisibility, /*settings.changeDynamicColors()*/ 2);
   easyMode.show(settingsMenuVisibility, easyMode.changeDynamicColors());
   normalMode.show(settingsMenuVisibility, normalMode.changeDynamicColors());
   hardMode.show(settingsMenuVisibility, hardMode.changeDynamicColors());
-}
-
-void startMenu() {
-  keyboard.show(startMenuVisibility, 1);
-  textToWrite.show(startMenuVisibility, 1);
-  indicators.show(startMenuVisibility, 1);
-
-  keyboard();
-}
-
-void keyboard() {
-  if (startMenuOpened && mainMenuVisibility == 0) {
-    if (keyCode == SHIFT) {
-      for (int i = 0; i < 117; i++) {
-        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
-      }
-    } else {
-      for (int i = 116; i >= 0; i--) {
-        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
-      }
-    }
-  }
 }
 
 void closeButton() {
@@ -128,16 +102,11 @@ void changeMenuVisibility() { // Function switching from a menu to another
     backMenuVisibility += transitionSpeed;
     if (settingsMenuOpened && settingsMenuVisibility != 300) {
       settingsMenuVisibility += transitionSpeed;
-    } else if (startMenuOpened && startMenuVisibility != 300) {
-      startMenuVisibility += transitionSpeed;
     }
   } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
     backMenuVisibility -= transitionSpeed;
     if (!settingsMenuOpened && settingsMenuVisibility != 0) {
       settingsMenuVisibility -= transitionSpeed;
-    }
-    if (!startMenuOpened && startMenuVisibility != 0) {
-      startMenuVisibility -= transitionSpeed;
     }
   }
 }
@@ -145,35 +114,38 @@ void changeMenuVisibility() { // Function switching from a menu to another
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
   rectMode(CENTER);
+  textAlign(CENTER, CENTER);
 
-  keyboard = new Box(width / 2, (3 * 60 + 400), (15 * 60 + 25), (5 * 60 + 25), "");
-  keyboard.edgeRoundness = 10;
-  textToWrite = new Box(width / 2, (275 / 2 + 25), (15 * 60 + 25), 275, "");
-  textToWrite.edgeRoundness = 10;
-  indicators = new Box(width / 2, (height - (3 * 60 + 230)), (15 * 60 + 25), 100, "");
-  indicators.edgeRoundness = 10;
+  start = new Button(width/2, height/2-82, 250, 75, "Start"); 
+  start.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+  settings = new Button(width/2, height/2, 250, 75, "Settings"); 
+  settings.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+  progress = new Button(width/2, height/2+82, 250, 75, "Progress"); 
+  progress.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
-  start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
-  settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
-  progress = new Button(width / 2, height / 2 + 82, 250, 75, "Progress"); 
+  close = new Button(width-100, 50, 100, 50, "close"); 
+  close.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+  backToMenu = new Button(width-206, 50, 100, 50, "menu");
+  backToMenu.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
-  close = new Button(width - 100, 50, 100, 50, "close"); 
-  backToMenu = new Button(width - 100, 110, 100, 50, "menu");
-
-  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "EasyMode"); 
-  normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
-  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
+  easyMode = new Button(width/2, height/2-82, 250, 75, "EasyMode"); 
+  easyMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+  normalMode = new Button(width/2, height/2, 250, 75, "NormalMode"); 
+  normalMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
+  hardMode = new Button(width/2, height/2+82, 250, 75, "HardMode"); 
+  hardMode.setDynamicColors(color(255, 255, 255), #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000, #0021F0, #0021F0, #F021FF);
 
   String[] keys = loadStrings("Keys.txt");
 
-  for (int index = 0; index < 117; index++) {
-    int spaceOne = keys[index].indexOf(" ");
-    int spaceTwo = keys[index].indexOf(" ", spaceOne + 1);
-    int keyX = int(keys[index].substring(spaceOne + 1, spaceTwo)) * 60 + (width - 60 * 16) / 2, 
-      keyY = int(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400;
-    String keyText = keys[index].substring(0, spaceOne);
+  for (int i = 0; i < 116; i++) {
+    int spaceOne = keys[i].indexOf(" ");
+    int spaceTwo = keys[i].indexOf(" ", spaceOne + 1);
+    int keyX = int(keys[i].substring(spaceOne + 1, spaceTwo)) * 70 + (width - 70 * 16) / 2, 
+      keyY = int(keys[i].substring(spaceTwo + 1, keys[i].length() - 1)) * 50 + 450;
+    String keyText = keys[i].substring(0, spaceOne);
 
-    keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
+    keysOfKeyboard[i] = new Key(keyX, keyY, 60, 40, keyText);
+    keysOfKeyboard[i].setDynamicColors(255, 200, 230, 100, 150, 90, 0, 20, 50);
   }
 }
 
@@ -184,9 +156,20 @@ void draw() {
   closeButton();
 
   changeMenuVisibility();
+  
+  if (startMenuOpened && mainMenuVisibility == 0) {
+    if (false) {
+      for (int i = 0; i < 116; i++) {
+        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
+      }
+    } else {
+      for (int i = 115; i >= 0; i--) {
+        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
+      }
+    }
+  }
 
   mainMenu();
   backMenu();
   settingsMenu();
-  startMenu();
 }

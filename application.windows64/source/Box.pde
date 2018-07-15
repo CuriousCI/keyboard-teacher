@@ -1,7 +1,7 @@
 class Box {
   PFont textFont;
 
-  int x, y, selfWidth, selfHeight, edgeRoundness, textSize, transparency;
+  int x, y, selfWidth, selfHeight, textSize, transparency;
   String text;
   color[] strokeColor = new color[3], fillColor = new color[3], textColor = new color[3];
 
@@ -12,10 +12,6 @@ class Box {
     selfHeight = H;
     text = T;
     textFont = loadFont("AgencyFB-Bold-48.vlw");
-    textSize = 1;
-    textAlign(LEFT, UP);
-    edgeRoundness = 20;
-    setDynamicColors(200, #E3E3E3, 50, 50, #E3E3E3, 200, #E3E3E3, 400, 400);
   }
 
   void setDynamicColors(color stroke_1, color fill_1, color text_1, color stroke_2, color fill_2, color text_2, color stroke_3, color fill_3, color text_3) {
@@ -41,7 +37,7 @@ class Box {
     strokeWeight(2.5);
     stroke(strokeColor[setOfColors], transparency);
     fill(fillColor[setOfColors], transparency);
-    rect (x, y, selfWidth, selfHeight, edgeRoundness);
+    rect (x, y, selfWidth, selfHeight, (selfWidth - selfHeight / 2) / 10);
 
 
     fill(textColor[setOfColors], transparency);
