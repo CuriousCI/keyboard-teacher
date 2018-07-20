@@ -1,4 +1,4 @@
-Box keyboard; //<>//
+Box keyboard;
 Box textToWrite;
 Box indicators;
 
