@@ -1,7 +1,7 @@
 class Box {
   PFont textFont;
 
-  int x, y, selfWidth, selfHeight, edgeRoundness, textSize, transparency;
+  int x, y, selfWidth, selfHeight, edgeRoundness, textSize, textPosition = CENTER, transparency;
   String text;
   color[] strokeColor = new color[3], fillColor = new color[3], textColor = new color[3];
 
@@ -12,8 +12,12 @@ class Box {
     selfHeight = H;
     text = T;
     textFont = loadFont("AgencyFB-Bold-48.vlw");
-    textSize = 1;
-    textAlign(LEFT, UP);
+    if (text.length() == 0) {
+      textSize = 1;
+    } else {
+      textSize = selfWidth / text.length();
+    }
+    textAlign(CENTER, CENTER);
     edgeRoundness = 20;
     setDynamicColors(200, #E3E3E3, 50, 50, #E3E3E3, 200, #E3E3E3, 400, 400);
   }
@@ -47,6 +51,10 @@ class Box {
     fill(textColor[setOfColors], transparency);
     textFont (textFont);
     textSize(textSize);
-    text (text, x, y);
+    if (textPosition == LEFT) {
+      text (text, x - selfWidth / 3, y - selfHeight / 3);
+    } else {
+      text (text, x, y);
+    }
   }
 }

@@ -113,5 +113,5 @@ Alt 3 5
 Spazio 4 5 
 AltGr 5 5 
 Start 6 5 
-☺☻♥ 7 5 
+lol 7 5 
 Control 8 5 
