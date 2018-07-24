@@ -12,6 +12,7 @@ void startButtonClicked() {
     settingsMenuOpened = false;
     backMenuOpened = true;
     startMenuOpened = true;
+    progressMenuOpened = false;
   }
 }
 
@@ -22,6 +23,7 @@ void settingsButtonClicked() {
     settingsMenuOpened = true;
     backMenuOpened = true;
     startMenuOpened = false;
+    progressMenuOpened = false;
   }
 }
 
@@ -32,6 +34,7 @@ void progressButtonClicked() {
     settingsMenuOpened = false;
     backMenuOpened = true;
     startMenuOpened = false;
+    progressMenuOpened = true;
   }
 }
 
@@ -42,6 +45,7 @@ void backToMenuButtonClicked() {
     settingsMenuOpened = false;
     backMenuOpened = false;
     startMenuOpened = false;
+    progressMenuOpened = false;
   }
 }
 

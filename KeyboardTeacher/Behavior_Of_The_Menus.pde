@@ -16,26 +16,27 @@ void mainMenu() {
 void startMenu() {
   if (easyModeActive) {
     keyboard.show(startMenuVisibility, 1);
+    textToWrite.selfHeight = 275;
+    textToWrite.y = 275 / 2 + 25;
     textToWrite.show(startMenuVisibility, 1);
+    indicators.y = height - (3 * 60 + 230);
     indicators.show(startMenuVisibility, 1);
+    keyboard();
   } else if (normalModeActive) {
     keyboard.show(startMenuVisibility, 1);
+    textToWrite.selfHeight = 275;
+    textToWrite.y = 275 / 2 + 25;
     textToWrite.show(startMenuVisibility, 1);
+    indicators.y = height - (3 * 60 + 230);
     indicators.show(startMenuVisibility, 1);
+    keyboard();
   } else if (hardModeActive) {
-    textToWrite.selfHeight = 450;
-    textToWrite.y = 300;
+    textToWrite.selfHeight = 570;
+    textToWrite.y = 325;
     textToWrite.show(startMenuVisibility, 1);
-    indicators.y = (height - (3 * 60 + 230)) + indicators.selfWidth;
+    indicators.y = height - 100;
     indicators.show(startMenuVisibility, 1);
   }
-
-  keyboard();
-}
-
-void backMenu() {
-  backToMenu.show(backMenuVisibility, backToMenu.changeDynamicColors());
-  backToMenuButtonClicked();
 }
 
 void settingsMenu() {
@@ -51,6 +52,16 @@ void settingsMenu() {
   normalModeButtonClicked();
   hardMode.show(settingsMenuVisibility, hardMode.changeDynamicColors());
   hardModeButtonClicked();
+}
+
+void progressMenu() {
+  addUser.show(progressMenuVisibility, addUser.changeDynamicColors());
+  selectUser.show(progressMenuVisibility, selectUser.changeDynamicColors());
+}
+
+void backMenu() {
+  backToMenu.show(backMenuVisibility, backToMenu.changeDynamicColors());
+  backToMenuButtonClicked();
 }
 
 void keyboard() {
@@ -72,6 +83,8 @@ void changeMenuVisibility() { // Function switching from a menu to another
       settingsMenuVisibility += transitionSpeed;
     } else if (startMenuOpened && startMenuVisibility != 300) {
       startMenuVisibility += transitionSpeed;
+    } else if (progressMenuOpened && progressMenuVisibility != 300) {
+      progressMenuVisibility += transitionSpeed;
     }
   } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
     backMenuVisibility -= transitionSpeed;
@@ -80,6 +93,9 @@ void changeMenuVisibility() { // Function switching from a menu to another
     }
     if (!startMenuOpened && startMenuVisibility != 0) {
       startMenuVisibility -= transitionSpeed;
+    }
+    if (!progressMenuOpened && progressMenuVisibility != 0) {
+      progressMenuVisibility -= transitionSpeed;
     }
   }
 }

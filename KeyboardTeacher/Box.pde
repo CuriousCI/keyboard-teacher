@@ -52,7 +52,7 @@ class Box {
     textFont (textFont);
     textSize(textSize);
     if (textPosition == LEFT) {
-      text (text, x - selfWidth / 3, y - selfHeight / 3);
+      text (text, (x - selfWidth / 2) + 150, (y - selfHeight / 2) + 40);
     } else {
       text (text, x, y);
     }

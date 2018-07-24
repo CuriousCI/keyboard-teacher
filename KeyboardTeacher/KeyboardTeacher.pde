@@ -20,7 +20,7 @@ Key[] keysOfKeyboard = new Key[117];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
   easyModeActive = false, normalModeActive = false, hardModeActive = true; 
-int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, startMenuVisibility = 0, transitionSpeed = 30; 
+int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30; 
 
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
@@ -28,7 +28,7 @@ void setup() {
 
   keyboard = new Box(width / 2, (3 * 60 + 400), (15 * 60 + 25), (5 * 60 + 25), "");
   keyboard.edgeRoundness = 10;
-  textToWrite = new Box(width / 2, (275 / 2 + 25), (15 * 60 + 25), 275, "Hi this is a testet!!!");
+  textToWrite = new Box(width / 2, (275 / 2 + 25), (15 * 60 + 25), 275, "Hi this is a test!!!");
   textToWrite.edgeRoundness = 10;
   textToWrite.textPosition = LEFT;
   indicators = new Box(width / 2, (height - (3 * 60 + 230)), (15 * 60 + 25), 100, "");
@@ -45,6 +45,9 @@ void setup() {
   normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
   hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
 
+  addUser = new Button(width - 215, 50, 110, 50, "Add User");
+  selectUser = new Button(width- 215, 110, 110, 50, "Select User");
+
   String[] keys = loadStrings("Keys.txt");
 
   for (int index = 0; index < 117; index++) {
@@ -55,23 +58,20 @@ void setup() {
       keyY = int ( float(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400 );
     String keyText = keys[index].substring(0, spaceOne); 
 
-    boolean alphanumeric = true;
+    boolean alphanumeric = true; 
     int keyTextASCII = 0;
     if (keyText.length() == 1) {
       keyTextASCII = int(keyText.charAt(0));
     } else {
       keyTextASCII = 0;
     }
-
     if (keyTextASCII >= int('0') && keyTextASCII <= int('9') || (keyTextASCII >= int('a') && keyTextASCII <= int('z'))) {
       alphanumeric = true;
     } else {
       alphanumeric = false;
     }
-
     if (alphanumeric && keyText.length() == 1) {
       keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
-      print(keyText);
     } else {
       keysOfKeyboard[index] = new Key(0, 0, 0, 0, " ");
     }
@@ -90,4 +90,5 @@ void draw() {
   backMenu();
   settingsMenu();
   startMenu();
+  progressMenu();
 }
