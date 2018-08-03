@@ -3,19 +3,23 @@ class Button extends Box {
   Button(int X, int Y, int W, int H, String T) {
     super(X, Y, W, H, T);
     textAlign(CENTER, CENTER);
-    setDynamicColors(#0021F0, #0021F0, #F021FF, #FFFFFF, #C8C8C8, #FFFFFF, #FF0000, #FF6405, #F0F000);
     edgeRoundness = (selfWidth - selfHeight / 2) / 10;
   }
 
-  int changeDynamicColors() {
+  void show(int transparency) {
+    changeDynamicColors();
+    staticShow(transparency);
+  }
+
+  void changeDynamicColors() {
     if (mouseInside()) {
       if (selfClicked(true)) {
-        return 1;
+        setColors(#FFFFFF, #C8C8C8, #FFFFFF);
       } else {
-        return 2;
+        setColors(#FF0000, #FF6405, #F0F000);
       }
     } else {
-      return 0;
+      setColors(#0021F0, #0021F0, #F021FF);
     }
   }
 

@@ -1,6 +1,18 @@
-Box keyboard; //<>//
+PFont textFont; //<>//
+
+Box keyboard;
 Box textToWrite;
-Box indicators;
+Box indicatorsBar;
+
+Box beatsPerMinute;
+Box charactersToWriteBox;
+Box writtenCharactersBox;
+Box time;
+Box percentageOfCompletion;
+Box percentageOfCorrectText;
+
+Box currentMode;
+Box currentUser;
 
 Button start;
 Button settings;
@@ -19,20 +31,35 @@ Button selectUser;
 Key[] keysOfKeyboard = new Key[117];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
-  easyModeActive = false, normalModeActive = false, hardModeActive = true; 
-int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30; 
+  easyModeActive = true, normalModeActive = false, hardModeActive = false; 
+int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
+  frame = 0, second = 0, charactersToWrite = 0, writtenCharacters = 0, beats = 0;
+String unwrittenText = "q", wrongText = " ", correctText = " ", writtenText = " ";
 
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
   rectMode(CENTER);
+  textFont = loadFont("AgencyFB-Bold-48.vlw");
+  textAlign(CENTER, CENTER);
 
-  keyboard = new Box(width / 2, (3 * 60 + 400), (15 * 60 + 25), (5 * 60 + 25), "");
-  keyboard.edgeRoundness = 10;
-  textToWrite = new Box(width / 2, (275 / 2 + 25), (15 * 60 + 25), 275, "Hi this is a test!!!");
-  textToWrite.edgeRoundness = 10;
-  textToWrite.textPosition = LEFT;
-  indicators = new Box(width / 2, (height - (3 * 60 + 230)), (15 * 60 + 25), 100, "");
-  indicators.edgeRoundness = 10;
+  String[] keys = loadStrings("Keys.txt");
+  String[] Settings = loadStrings("Settings.txt");
+
+  keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
+  textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "");
+  indicatorsBar = new Box(width / 2, (height - (3 * 60 + 230)), 925, 100, "");
+
+  beatsPerMinute = new Box(width / 2 - 306, height - 433, 298, 40, "BEATS/MINUTE: ");
+  charactersToWriteBox = new Box(width / 2 - 306, height - 387, 300, 40, "CHARACTERS TO WRITE: ");
+  writtenCharactersBox = new Box(width / 2, height - 387, 300, 40, "WRITTEN CHARACTERS: ");
+  time = new Box(width / 2, height - 433, 300, 40, "TIME: "); 
+  time.textSize /= 2;
+  percentageOfCompletion = new Box(width / 2 + 306, height - 433, 300, 40, "COMPLETION: ");
+  percentageOfCorrectText = new Box(width / 2 + 306, height - 387, 300, 40, "CORRECT TEXT:");
+
+  currentMode = new Box(width / 2, height / 2 + 164, 250, 50, "");
+  currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "");
+  currentUser.text = Settings[1].substring(0, Settings[1].length() - 1);
 
   start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
   settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
@@ -45,35 +72,28 @@ void setup() {
   normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
   hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
 
-  addUser = new Button(width - 215, 50, 110, 50, "Add User");
-  selectUser = new Button(width- 215, 110, 110, 50, "Select User");
-
-  String[] keys = loadStrings("Keys.txt");
+  addUser = new Button(165, 50, 220, 50, "Add User");
+  addUser.edgeRoundness = 7;
+  selectUser = new Button(395, 50, 220, 50, "Select User");
+  selectUser.edgeRoundness = 7;
 
   for (int index = 0; index < 117; index++) {
-
     int spaceOne = keys[index].indexOf(" ");
     int spaceTwo = keys[index].indexOf(" ", spaceOne + 1);
     int keyX = int ( float(keys[index].substring(spaceOne + 1, spaceTwo)) * 60 + (width - 60 * 16) / 2 ), 
       keyY = int ( float(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400 );
     String keyText = keys[index].substring(0, spaceOne); 
 
-    boolean alphanumeric = true; 
     int keyTextASCII = 0;
     if (keyText.length() == 1) {
       keyTextASCII = int(keyText.charAt(0));
     } else {
       keyTextASCII = 0;
     }
-    if (keyTextASCII >= int('0') && keyTextASCII <= int('9') || (keyTextASCII >= int('a') && keyTextASCII <= int('z'))) {
-      alphanumeric = true;
-    } else {
-      alphanumeric = false;
-    }
-    if (alphanumeric && keyText.length() == 1) {
+    if (keyTextASCII >= int('0') && keyTextASCII <= int('9') || (keyTextASCII >= int('a') && keyTextASCII <= int('z')) && keyText.length() == 1) {
       keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
     } else {
-      keysOfKeyboard[index] = new Key(0, 0, 0, 0, " ");
+      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, "");
     }
   }
 }
@@ -81,7 +101,7 @@ void setup() {
 void draw() {
   background(#ADF6FF);
 
-  close.show(300, close.changeDynamicColors());
+  close.show(300);
   closeButtonClicked();
 
   changeMenuVisibility();

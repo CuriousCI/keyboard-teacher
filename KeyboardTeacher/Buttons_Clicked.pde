@@ -50,7 +50,7 @@ void backToMenuButtonClicked() {
 }
 
 void easyModeButtonClicked() {
-  if (easyMode.selfClicked(settingsMenuOpened)) {
+  if (easyMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
     delay(100);
     easyModeActive = true;
     normalModeActive = false;
@@ -59,7 +59,7 @@ void easyModeButtonClicked() {
 }
 
 void normalModeButtonClicked() {
-  if (normalMode.selfClicked(settingsMenuOpened)) {
+  if (normalMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
     delay(100);
     easyModeActive = false;
     normalModeActive = true;
@@ -68,7 +68,7 @@ void normalModeButtonClicked() {
 }
 
 void hardModeButtonClicked() {
-  if (hardMode.selfClicked(settingsMenuOpened)) {
+  if (hardMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
     delay(100);
     easyModeActive = false;
     normalModeActive = false;

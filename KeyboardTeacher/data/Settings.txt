@@ -1,0 +1,3 @@
+current mode: hard
+current user: standard
+user: standard
