@@ -1,4 +1,4 @@
-void mainMenu() { //<>//
+void mainMenu() {
   start.show(mainMenuVisibility);
   startButtonClicked();
 

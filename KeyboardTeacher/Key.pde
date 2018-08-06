@@ -18,7 +18,15 @@ class Key extends Box {
       if (text.length() == 1 && key == text.charAt(0)) {
         setColors(0, #D0D0D0, 50);
       } else {
+        //if (easyModeActive){
+        //  if (unwrittenText[line].charAt(writtenText[line].length()) == key){
+        //    setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
+        //  } else {
+        //    setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
+        //  }
+        //} else {
         setColors(100, #D0D0D0, 90);
+        //}
       }
     } else {
       setColors(100, #D0D0D0, 90);
