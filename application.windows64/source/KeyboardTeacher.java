@@ -14,9 +14,21 @@ import java.io.IOException;
 
 public class KeyboardTeacher extends PApplet {
 
+PFont textFont;
+
 Box keyboard;
 Box textToWrite;
-Box indicators;
+Box indicatorsBar;
+
+Box beatsPerMinute;
+Box charactersToWriteBox;
+Box writtenCharactersBox;
+Box time;
+Box percentageOfCompletion;
+Box percentageOfCorrectText;
+
+Box currentMode;
+Box currentUser;
 
 Button start;
 Button settings;
@@ -29,29 +41,143 @@ Button easyMode;
 Button normalMode;
 Button hardMode;
 
+Button addUser;
+Button selectUser;
+
 Key[] keysOfKeyboard = new Key[117];
 
-boolean mainMenuOpened = true, settingsMenuOpened = false, backMenuOpened = false, startMenuOpened = false;
-int mainMenuVisibility = 0, backMenuVisibility = 0, settingsMenuVisibility = 0, startMenuVisibility = 0, transitionSpeed = 30; 
+boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
+  easyModeActive = false, normalModeActive = false, hardModeActive = true, exerciseActive = false, exerciseActivable = true; 
+int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
+  frame = 0, second = 0, charactersToWrite = 0, writtenCharacters = 0, correctCharacters = 0, wrongCharacters = 0, beats = 0, 
+  textX, textY = 50, MAX_LINES = 50, line = 0;
+String[] unwrittenText = new String[MAX_LINES], wrongText = new String[MAX_LINES], correctText = new String[MAX_LINES], writtenText = new String[MAX_LINES];
 
+public void setup() {
+   //size(displayWidth, displayHeight); frame.setLocation(0, 0);
+  rectMode(CENTER);
+  textFont = loadFont("AgencyFB-Bold-48.vlw");
+  textAlign(CENTER, CENTER);
+
+  String[] keys = loadStrings("Keys.txt");
+  String[] Settings = loadStrings("Settings.txt");
+
+  for (int i = 0; i < MAX_LINES; i++) {
+    unwrittenText[i] = " ";
+    writtenText[i] = " ";
+    wrongText[i] = " ";
+    correctText[i] = " ";
+  }
+
+  keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
+  textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "[press a key to start]");
+  indicatorsBar = new Box(width / 2, (height - (3 * 60 + 230)), 925, 100, "");
+
+  beatsPerMinute = new Box(width / 2 - 306, height - 433, 298, 40, "BEATS/MINUTE: ");
+  charactersToWriteBox = new Box(width / 2 - 306, height - 387, 300, 40, "CHARACTERS TO WRITE: ");
+  writtenCharactersBox = new Box(width / 2, height - 387, 300, 40, "WRITTEN CHARACTERS: ");
+  time = new Box(width / 2, height - 433, 300, 40, "TIME: "); 
+  time.textSize /= 2;
+  percentageOfCompletion = new Box(width / 2 + 306, height - 433, 300, 40, "COMPLETION: ");
+  percentageOfCorrectText = new Box(width / 2 + 306, height - 387, 300, 40, "CORRECT TEXT:");
+
+  currentMode = new Box(width / 2, height / 2 + 164, 250, 50, "");
+  currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "");
+  currentUser.text = Settings[0].substring(0, Settings[0].length());
+
+  start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
+  settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
+  progress = new Button(width / 2, height / 2 + 82, 250, 75, "Progress"); 
+
+  close = new Button(width - 100, 50, 100, 50, "close"); 
+  backToMenu = new Button(width - 100, 110, 100, 50, "menu");
+
+  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "EasyMode"); 
+  normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
+  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
+
+  addUser = new Button(165, 50, 220, 50, "Add User");
+  addUser.edgeRoundness = 7;
+  selectUser = new Button(395, 50, 220, 50, "Select User");
+  selectUser.edgeRoundness = 7;
+
+  for (int index = 0; index < 117; index++) {
+    int spaceOne = keys[index].indexOf(" ");
+    int spaceTwo = keys[index].indexOf(" ", spaceOne + 1);
+    int keyX = PApplet.parseInt ( PApplet.parseFloat(keys[index].substring(spaceOne + 1, spaceTwo)) * 60 + (width - 60 * 16) / 2 ), 
+      keyY = PApplet.parseInt ( PApplet.parseFloat(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400 );
+    String keyText = keys[index].substring(0, spaceOne); 
+
+    int keyTextASCII = 0;
+    if (keyText.length() == 1) {
+      keyTextASCII = PApplet.parseInt(keyText.charAt(0));
+    } else {
+      keyTextASCII = 0;
+    }
+    if (keyTextASCII >= PApplet.parseInt('0') && keyTextASCII <= PApplet.parseInt('9') || (keyTextASCII >= PApplet.parseInt('a') && keyTextASCII <= PApplet.parseInt('z')) && keyText.length() == 1) {
+      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
+    } else {
+      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, "");
+    }
+  }
+}
+
+public void draw() {
+  background(0xffADF6FF);
+
+  close.show(300);
+  closeButtonClicked();
+
+  changeMenuVisibility();
+
+  mainMenu();
+  backMenu();
+  settingsMenu();
+  startMenu();
+  progressMenu();
+}
 public void mainMenu() {
-  start.show(mainMenuVisibility, start.changeDynamicColors());
-  startButton();
+  start.show(mainMenuVisibility);
+  startButtonClicked();
 
   settings.x = width/2;
   settings.y =  height/2;
   settings.selfWidth = 250;
   settings.selfHeight = 75;
-  settings.show(mainMenuVisibility, settings.changeDynamicColors());
-  settingsButton();
+  settings.show(mainMenuVisibility);
+  settingsButtonClicked();
 
-  progress.show(mainMenuVisibility, progress.changeDynamicColors());
-  progressButton();
+  progress.show(mainMenuVisibility);
+  progressButtonClicked();
+
+  currentData();
 }
 
-public void backMenu() {
-  backToMenu.show(backMenuVisibility, backToMenu.changeDynamicColors());
-  backToMenuButton();
+public void startMenu() {
+  if (easyModeActive) {
+    keyboard.staticShow(startMenuVisibility);
+    textToWrite.selfHeight = 275;
+    textToWrite.y = 275 / 2 + 25;
+    textToWrite.staticShow(startMenuVisibility);
+    indicatorsBar.y = height - (3 * 60 + 230);
+    indicatorsBar.staticShow(startMenuVisibility);
+    keyboard();
+  } else if (normalModeActive) {
+    keyboard.staticShow(startMenuVisibility);
+    textToWrite.selfHeight = 275;
+    textToWrite.y = 275 / 2 + 25;
+    textToWrite.staticShow(startMenuVisibility);
+    indicatorsBar.y = height - (3 * 60 + 230);
+    indicatorsBar.staticShow(startMenuVisibility);
+    keyboard();
+  } else if (hardModeActive) {
+    textToWrite.selfHeight = 580;
+    textToWrite.y = 320;
+    textToWrite.staticShow(startMenuVisibility);
+    indicatorsBar.y = height - 100;
+    indicatorsBar.staticShow(startMenuVisibility);
+  }
+  exercise();
 }
 
 public void settingsMenu() {
@@ -60,79 +186,186 @@ public void settingsMenu() {
   settings.selfWidth = 300;
   settings.selfHeight = 90;
 
-  settings.show(settingsMenuVisibility, /*settings.changeDynamicColors()*/ 0);
-  easyMode.show(settingsMenuVisibility, easyMode.changeDynamicColors());
-  normalMode.show(settingsMenuVisibility, normalMode.changeDynamicColors());
-  hardMode.show(settingsMenuVisibility, hardMode.changeDynamicColors());
+  settings.show(settingsMenuVisibility);
+  easyMode.show(settingsMenuVisibility);
+  easyModeButtonClicked();
+  normalMode.show(settingsMenuVisibility);
+  normalModeButtonClicked();
+  hardMode.show(settingsMenuVisibility);
+  hardModeButtonClicked();
 }
 
-public void startMenu() {
-  keyboard.show(startMenuVisibility, 1);
-  textToWrite.show(startMenuVisibility, 1);
-  indicators.show(startMenuVisibility, 1);
+public void progressMenu() {
+  addUser.show(progressMenuVisibility);
+  selectUser.show(progressMenuVisibility);
+}
 
-  keyboard();
+public void currentData() {
+  if (easyModeActive) {
+    currentMode.text = "current mode: [EASY]";
+  } else if (normalModeActive) {
+    currentMode.text = "current mode: [NORMAL]";
+  } else if (hardModeActive) {
+    currentMode.text = "current mode: [HARD]";
+  }
+
+  currentMode.setColors(0xff0021F0, 0xff0021F0, 0xffF021FF);
+  currentMode.textSize = currentMode.selfWidth / currentMode.text.length() * 2; 
+  currentUser.setColors(0xff0021F0, 0xff0021F0, 0xffF021FF);
+  currentUser.textSize = currentUser.selfWidth / currentUser.text.length() * 2; 
+
+  if (progressMenuOpened && mainMenuVisibility == 0) {
+    currentMode.x = 640; 
+    currentMode.y = 50; 
+    currentUser.x = 900; 
+    currentUser.y = 50;
+  } else if (mainMenuOpened && progressMenuVisibility == 0) {
+    currentMode.x = width / 2; 
+    currentMode.y = height / 2 + 164; 
+    currentUser.x = width / 2; 
+    currentUser.y = height / 2 + 218;
+  }
+
+  if (((!mainMenuOpened && settingsMenuOpened) || (mainMenuOpened && !settingsMenuOpened)) && (startMenuVisibility == 0 && progressMenuVisibility == 0)) {
+    currentMode.staticShow(300);
+    currentUser.staticShow(300);
+  } else {
+    currentMode.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
+    currentUser.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
+  }
+}
+
+public void backMenu() {
+  backToMenu.show(backMenuVisibility);
+  backToMenuButtonClicked();
 }
 
 public void keyboard() {
-  if (startMenuOpened && mainMenuVisibility == 0) {
-    if (keyCode == SHIFT) {
-      for (int i = 0; i < 117; i++) {
-        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
-      }
-    } else {
-      for (int i = 116; i >= 0; i--) {
-        keysOfKeyboard[i].show(300, keysOfKeyboard[i].changeDynamicColors());
-      }
+  if (startMenuOpened && startMenuVisibility >= 150) {
+    for (int i = 116; i >= 0; i--) {
+      keysOfKeyboard[i].show(300);
     }
   }
 }
 
-public void closeButton() {
-  if (close.selfClicked(true)) {
-    delay(100);
-    exit();
+public void exercise() {
+  if (keyPressed && !exerciseActive && exerciseActivable) {
+    exerciseActive = true;
+    exerciseActivable = false;
+    textToWrite.text = "";
+    frame = 0;
+  }
+  if (exerciseActive) {
+    textAlign(LEFT, CENTER);
+    textSize(25);
+    textX = width / 2 - 925 / 2 + 14; 
+    unwrittenText[line] = "Ciao questo e un testo casuale per testare la funzionalita del programma";
+    textSize(22);
+    if (keyPressed) {
+      writtenText[line] += key;
+      correctText[line] += key;
+      wrongText[line] += key;
+      String strangeText = unwrittenText[line];
+      unwrittenText[line] = " ";
+      for (int i = 0; i < writtenText[line].length(); i++) {
+        unwrittenText[line] += " ";
+      }
+      if (writtenText[line].length() < strangeText.length()) {
+        unwrittenText[line] += strangeText.substring(writtenText[line].length());
+      }
+      if (textWidth(writtenText[line]) > 890) line++;
+      beats++;
+      keyPressed = false;
+      delay(100);
+    }
+    for (int i = 0; i <= line; i++) {
+      fill(200, 200, 200, startMenuVisibility);
+      text(unwrittenText[i], textX, textY  + i * 28);
+      if (easyModeActive) {
+        fill(0, 255, 0, startMenuVisibility);
+        text(correctText[i], textX - 5, textY  + i * 28);
+        fill(255, 0, 0, startMenuVisibility);
+        text(wrongText[i], textX - 5, textY  + i * 28);
+      } else {
+        fill(0, 0, 0, startMenuVisibility);
+        text(writtenText[i], textX - 5, textY + i * 28);
+      }
+    }
+    textAlign(CENTER, CENTER);
+
+    indicators();
+    if (writtenText[line].length() > unwrittenText[line].length() + 1 && exerciseActive) {
+      exerciseActive = false;
+      textToWrite.text = "[Exercise is over! Good job!]";
+      for (int i = 0; i <= line; i++) {
+        writtenText[i] = " ";
+      }
+      line = 0;
+      textToWrite.staticShow(300);
+    }
   }
 }
 
-public void startButton() {
-  if (start.selfClicked(mainMenuOpened)) {
-    delay(100);
-    mainMenuOpened = false;
-    settingsMenuOpened = false;
-    backMenuOpened = true;
-    startMenuOpened = true;
+public void indicators() {
+  frame++;
+  if (frame >= PApplet.parseInt(frameRate)) {
+    second++;
+    frame = 0;
   }
-}
+  if (easyModeActive || normalModeActive) {
+    beatsPerMinute.x = width / 2 - 306; 
+    beatsPerMinute.y = height - 433; 
+    charactersToWriteBox.x = width / 2 - 306; 
+    charactersToWriteBox.y = height - 387; 
+    writtenCharactersBox.x = width / 2; 
+    writtenCharactersBox.y = height - 387; 
+    time.x = width / 2; 
+    time.y = height - 433; 
+    percentageOfCompletion.x = width / 2 + 306; 
+    percentageOfCompletion.y = height - 433; 
+    percentageOfCorrectText.x =width / 2 + 306; 
+    percentageOfCorrectText.y = height - 387;
+  } else if (hardModeActive) {
+    beatsPerMinute.x = width / 2 - 306; 
+    beatsPerMinute.y = height - 123; 
+    charactersToWriteBox.x = width / 2 - 306; 
+    charactersToWriteBox.y = height - 77; 
+    writtenCharactersBox.x = width / 2; 
+    writtenCharactersBox.y = height - 77; 
+    time.x = width / 2; 
+    time.y = height - 123; 
+    percentageOfCompletion.x = width / 2 + 306; 
+    percentageOfCompletion.y = height - 123; 
+    percentageOfCorrectText.x =width / 2 + 306; 
+    percentageOfCorrectText.y = height - 77;
+  }
 
-public void settingsButton() {
-  if (settings.selfClicked(mainMenuOpened)) {
-    delay(100);
-    mainMenuOpened = false;
-    settingsMenuOpened = true;
-    backMenuOpened = true;
-    startMenuOpened = false;
+  charactersToWrite = 0;
+  writtenCharacters = 0;
+  correctCharacters = 0;
+  wrongCharacters = 0;
+  for (int i = 0; i < MAX_LINES; i++) {
+    charactersToWrite += unwrittenText[i].length() - writtenText[i].length();
+    writtenCharacters += writtenText[i].length();
+    correctCharacters += correctText[i].length();
+    wrongCharacters += wrongText[i].length();
   }
-}
 
-public void progressButton() {
-  if (progress.selfClicked(mainMenuOpened)) {
-    delay(100);
-    mainMenuOpened = false;
-    settingsMenuOpened = false;
-    backMenuOpened = true;
-    startMenuOpened = false;
+  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 && correctCharacters != 0 && wrongCharacters != 0) {
+    beatsPerMinute.text = "BEATS/MINUTE: " + PApplet.parseInt(beats * 60 / second);
+    charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
+    writtenCharactersBox.text = "WRITTEN CHARACTERS: " + writtenCharacters;
+    time.text = "TIME: " + second; 
+    percentageOfCompletion.text = "COMPLETION: " + PApplet.parseInt(writtenCharacters * 100 / charactersToWrite) + "%";
+    percentageOfCorrectText.text = "CORRECT TEXT:" + PApplet.parseInt(correctCharacters * 100 / writtenCharacters) + "%";
   }
-}
 
-public void backToMenuButton() {
-  if (backToMenu.selfClicked(!mainMenuOpened)) {
-    delay(100);
-    mainMenuOpened = true;
-    settingsMenuOpened = false;
-    backMenuOpened = false;
-    startMenuOpened = false;
-  }
+  beatsPerMinute.staticShow(startMenuVisibility);
+  charactersToWriteBox.staticShow(startMenuVisibility);
+  writtenCharactersBox.staticShow(startMenuVisibility);
+  time.staticShow(startMenuVisibility);
+  percentageOfCompletion.staticShow(startMenuVisibility);
+  percentageOfCorrectText.staticShow(startMenuVisibility);
 }
 
 public void changeMenuVisibility() { // Function switching from a menu to another
@@ -146,6 +379,8 @@ public void changeMenuVisibility() { // Function switching from a menu to anothe
       settingsMenuVisibility += transitionSpeed;
     } else if (startMenuOpened && startMenuVisibility != 300) {
       startMenuVisibility += transitionSpeed;
+    } else if (progressMenuOpened && progressMenuVisibility != 300) {
+      progressMenuVisibility += transitionSpeed;
     }
   } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
     backMenuVisibility -= transitionSpeed;
@@ -155,104 +390,49 @@ public void changeMenuVisibility() { // Function switching from a menu to anothe
     if (!startMenuOpened && startMenuVisibility != 0) {
       startMenuVisibility -= transitionSpeed;
     }
+    if (!progressMenuOpened && progressMenuVisibility != 0) {
+      progressMenuVisibility -= transitionSpeed;
+    }
   }
-}
-
-public void setup() {
-   //size(displayWidth, displayHeight); frame.setLocation(0, 0);
-  rectMode(CENTER);
-
-  keyboard = new Box(width / 2, (3 * 60 + 400), (15 * 60 + 25), (5 * 60 + 25), "");
-  keyboard.edgeRoundness = 10;
-  textToWrite = new Box(width / 2, (275 / 2 + 25), (15 * 60 + 25), 275, "");
-  textToWrite.edgeRoundness = 10;
-  indicators = new Box(width / 2, (height - (3 * 60 + 230)), (15 * 60 + 25), 100, "");
-  indicators.edgeRoundness = 10;
-
-  start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
-  settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
-  progress = new Button(width / 2, height / 2 + 82, 250, 75, "Progress"); 
-
-  close = new Button(width - 100, 50, 100, 50, "close"); 
-  backToMenu = new Button(width - 100, 110, 100, 50, "menu");
-
-  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "EasyMode"); 
-  normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
-  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
-
-  String[] keys = loadStrings("Keys.txt");
-
-  for (int index = 0; index < 117; index++) {
-    int spaceOne = keys[index].indexOf(" ");
-    int spaceTwo = keys[index].indexOf(" ", spaceOne + 1);
-    int keyX = PApplet.parseInt(keys[index].substring(spaceOne + 1, spaceTwo)) * 60 + (width - 60 * 16) / 2, 
-      keyY = PApplet.parseInt(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400;
-    String keyText = keys[index].substring(0, spaceOne);
-
-    keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
-  }
-}
-
-public void draw() {
-  background(0xffADF6FF);
-
-  close.show(300, close.changeDynamicColors());
-  closeButton();
-
-  changeMenuVisibility();
-
-  mainMenu();
-  backMenu();
-  settingsMenu();
-  startMenu();
 }
 class Box {
-  PFont textFont;
 
   int x, y, selfWidth, selfHeight, edgeRoundness, textSize, transparency;
   String text;
-  int[] strokeColor = new int[3], fillColor = new int[3], textColor = new int[3];
+  int[] selfColor = new int[3];
 
   Box(int X, int Y, int W, int H, String T) {
     x = X;
     y = Y;
     selfWidth = W;
     selfHeight = H;
+
+    setColors(50, 0xffE3E3E3, 20);
+
     text = T;
-    textFont = loadFont("AgencyFB-Bold-48.vlw");
-    textSize = 1;
-    textAlign(LEFT, UP);
-    edgeRoundness = 20;
-    setDynamicColors(200, 0xffE3E3E3, 50, 50, 0xffE3E3E3, 200, 0xffE3E3E3, 400, 400);
+    if (text.length() == 0) {
+      textSize = 1;
+    } else {
+      textSize = selfWidth / text.length();
+    }
+    edgeRoundness = 10;
   }
 
-  public void setDynamicColors(int stroke_1, int fill_1, int text_1, int stroke_2, int fill_2, int text_2, int stroke_3, int fill_3, int text_3) {
-    // First set of colors
-    strokeColor[0] = stroke_1;
-    strokeColor[1] = stroke_2;
-    strokeColor[2] = stroke_3;
-
-    // Second set of Colors
-    fillColor[0] = fill_1;
-    fillColor[1] = fill_2;
-    fillColor[2] = fill_3;
-
-    // Third set of colors
-    textColor[0] = text_1;
-    textColor[1] = text_2;
-    textColor[2] = text_3;
+  public void setColors(int stroke, int fill, int text) {
+    selfColor[0] = stroke;
+    selfColor[1] = fill;
+    selfColor[2] = text;
   }
 
-  public void show(int transparency, int setOfColors) {
+  public void staticShow(int transparency) {
     this.transparency = transparency;
-
     strokeWeight(2.5f);
-    stroke(strokeColor[setOfColors], transparency);
-    fill(fillColor[setOfColors], transparency);
+    stroke(selfColor[0], transparency);
+    fill(selfColor[1], transparency);
     rect (x, y, selfWidth, selfHeight, edgeRoundness);
 
 
-    fill(textColor[setOfColors], transparency);
+    fill(selfColor[2], transparency);
     textFont (textFont);
     textSize(textSize);
     text (text, x, y);
@@ -262,21 +442,24 @@ class Button extends Box {
 
   Button(int X, int Y, int W, int H, String T) {
     super(X, Y, W, H, T);
-    textSize = selfWidth / text.length();
     textAlign(CENTER, CENTER);
-    setDynamicColors(0xff0021F0, 0xff0021F0, 0xffF021FF, 0xffFFFFFF, 0xffC8C8C8, 0xffFFFFFF, 0xffFF0000, 0xffFF6405, 0xffF0F000);
     edgeRoundness = (selfWidth - selfHeight / 2) / 10;
   }
 
-  public int changeDynamicColors() {
+  public void show(int transparency) {
+    changeDynamicColors();
+    staticShow(transparency);
+  }
+
+  public void changeDynamicColors() {
     if (mouseInside()) {
       if (selfClicked(true)) {
-        return 1;
+        setColors(0xffFFFFFF, 0xffC8C8C8, 0xffFFFFFF);
       } else {
-        return 2;
+        setColors(0xffFF0000, 0xffFF6405, 0xffF0F000);
       }
     } else {
-      return 0;
+      setColors(0xff0021F0, 0xff0021F0, 0xffF021FF);
     }
   }
 
@@ -296,25 +479,117 @@ class Button extends Box {
     }
   }
 }
+public void closeButtonClicked() {
+  if (close.selfClicked(true)) {
+    delay(100);
+    exit();
+  }
+}
+
+public void startButtonClicked() {
+  if (start.selfClicked(mainMenuOpened)) {
+    delay(100);
+    mainMenuOpened = false;
+    settingsMenuOpened = false;
+    backMenuOpened = true;
+    startMenuOpened = true;
+    progressMenuOpened = false;
+    textToWrite.text = "[press a key to start]";
+  }
+}
+
+public void settingsButtonClicked() {
+  if (settings.selfClicked(mainMenuOpened)) {
+    delay(100);
+    mainMenuOpened = false;
+    settingsMenuOpened = true;
+    backMenuOpened = true;
+    startMenuOpened = false;
+    progressMenuOpened = false;
+  }
+}
+
+public void progressButtonClicked() {
+  if (progress.selfClicked(mainMenuOpened)) {
+    delay(100);
+    mainMenuOpened = false;
+    settingsMenuOpened = false;
+    backMenuOpened = true;
+    startMenuOpened = false;
+    progressMenuOpened = true;
+  }
+}
+
+public void backToMenuButtonClicked() {
+  if (backToMenu.selfClicked(!mainMenuOpened)) {
+    delay(100);
+    mainMenuOpened = true;
+    settingsMenuOpened = false;
+    backMenuOpened = false;
+    startMenuOpened = false;
+    progressMenuOpened = false;
+    exerciseActivable = true;
+  }
+}
+
+public void easyModeButtonClicked() {
+  if (easyMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
+    delay(100);
+    easyModeActive = true;
+    normalModeActive = false;
+    hardModeActive = false;
+  }
+}
+
+public void normalModeButtonClicked() {
+  if (normalMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
+    delay(100);
+    easyModeActive = false;
+    normalModeActive = true;
+    hardModeActive = false;
+  }
+}
+
+public void hardModeButtonClicked() {
+  if (hardMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
+    delay(100);
+    easyModeActive = false;
+    normalModeActive = false;
+    hardModeActive = true;
+  }
+}
 class Key extends Box {
 
   Key(int X, int Y, int W, int H, String T) {
     super(X, Y, W, H, T);
-    textSize = selfWidth / text.length() / 2 + 10;
+    if (textSize != 1) {
+      textSize = selfWidth / text.length() / 2 + 10;
+    }
     textAlign(CENTER, CENTER);
-    setDynamicColors(234324, 0xffD0D0D0, 324324, 100, 0xffD0D0D0, 90, 0, 0xffD0D0D0, 50);
-    edgeRoundness = 10;
   }
 
-  public int changeDynamicColors() {
+  public void show(int transparency) {
+    changeDynamicColors();
+    staticShow(transparency);
+  }
+
+  public void changeDynamicColors() {
     if (keyPressed) {
       if (text.length() == 1 && key == text.charAt(0)) {
-        return 2;
+        setColors(0, 0xffD0D0D0, 50);
       } else {
-        return 1;
+        //if (easyModeActive){
+        //  if (unwrittenText[line].charAt(writtenText[line].length()) == key){
+        //    setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
+        //  } else {
+        //    setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
+        //  }
+        //} else {
+        setColors(100, 0xffD0D0D0, 90);
+        //}
       }
     } else {
-      return 1;
+      setColors(100, 0xffD0D0D0, 90);
     }
   }
 }

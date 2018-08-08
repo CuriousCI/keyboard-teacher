@@ -2,21 +2,34 @@ class Key extends Box {
 
   Key(int X, int Y, int W, int H, String T) {
     super(X, Y, W, H, T);
-    textSize = selfWidth / text.length() / 2 + 10;
+    if (textSize != 1) {
+      textSize = selfWidth / text.length() / 2 + 10;
+    }
     textAlign(CENTER, CENTER);
-    setDynamicColors(234324, #D0D0D0, 324324, 100, #D0D0D0, 90, 0, #D0D0D0, 50);
-    edgeRoundness = 10;
   }
 
-  int changeDynamicColors() {
+  void show(int transparency) {
+    changeDynamicColors();
+    staticShow(transparency);
+  }
+
+  void changeDynamicColors() {
     if (keyPressed) {
       if (text.length() == 1 && key == text.charAt(0)) {
-        return 2;
+        setColors(0, #D0D0D0, 50);
       } else {
-        return 1;
+        //if (easyModeActive){
+        //  if (unwrittenText[line].charAt(writtenText[line].length()) == key){
+        //    setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
+        //  } else {
+        //    setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
+        //  }
+        //} else {
+        setColors(100, #D0D0D0, 90);
+        //}
       }
     } else {
-      return 1;
+      setColors(100, #D0D0D0, 90);
     }
   }
 }
