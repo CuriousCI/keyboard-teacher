@@ -4,21 +4,36 @@ class Box {
   String text;
   color[] selfColor = new color[3];
 
-  Box(int X, int Y, int W, int H, String T) {
-    x = X;
-    y = Y;
-    selfWidth = W;
-    selfHeight = H;
+  Box(int x, int y, int w, int h, String text) {
+    this.x = x;
+    this.y = y;
+    selfWidth = w;
+    selfHeight = h;
 
     setColors(50, #E3E3E3, 20);
 
-    text = T;
+    this.text = text;
     if (text.length() == 0) {
       textSize = 1;
     } else {
       textSize = selfWidth / text.length();
     }
     edgeRoundness = 10;
+  }
+
+  void setCoordinates(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  void setDimensions(int w, int h) {
+    selfWidth = w;
+    selfHeight = h;
+  }
+
+  void setData(int x, int y, int w, int h) {
+    setCoordinates(x, y);
+    setDimensions(w, h);
   }
 
   void setColors(color stroke, color fill, color text) {
