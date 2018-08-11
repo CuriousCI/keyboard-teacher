@@ -33,9 +33,10 @@ Key[] keysOfKeyboard = new Key[117];
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
   easyModeActive = false, normalModeActive = false, hardModeActive = true, exerciseActive = false, exerciseActivable = true; 
 int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
-  frame = 0, second = 0, charactersToWrite = 0, writtenCharacters = 0, correctCharacters = 0, wrongCharacters = 0, beats = 0, 
-  textX, textY = 50, MAX_LINES = 50, line = 0;
-String[] unwrittenText = new String[MAX_LINES], wrongText = new String[MAX_LINES], correctText = new String[MAX_LINES], writtenText = new String[MAX_LINES];
+  frame = 0, second = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
+String unwrittenText = "ciao questo e un testo a caso provalo", wrongText = "", correctText = "", writtenText = "";
+char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
+
 
 void setup() {
   fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
@@ -44,14 +45,6 @@ void setup() {
   textAlign(CENTER, CENTER);
 
   String[] keys = loadStrings("Keys.txt");
-  String[] Settings = loadStrings("Settings.txt");
-
-  for (int i = 0; i < MAX_LINES; i++) {
-    unwrittenText[i] = " ";
-    writtenText[i] = " ";
-    wrongText[i] = " ";
-    correctText[i] = " ";
-  }
 
   keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
   textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "[press a key to start]");
@@ -67,7 +60,7 @@ void setup() {
 
   currentMode = new Box(width / 2, height / 2 + 164, 250, 50, "");
   currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "");
-  currentUser.text = Settings[0].substring(0, Settings[0].length());
+  currentUser.text = "current user: standard";
 
   start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
   settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
@@ -114,9 +107,14 @@ void draw() {
 
   changeMenuVisibility();
 
-  mainMenu();
+  if (mainMenuOpened) mainMenu();
+  if (startMenuOpened) startMenu();
+  if (settingsMenuOpened) settingsMenu();
+  if (progressMenuOpened) progressMenu();
+  currentData();
   backMenu();
-  settingsMenu();
-  startMenu();
-  progressMenu();
+
+  fill(0);
+  text(mouseX, mouseX + 100, mouseY + 150);
+  text(mouseY, mouseX + 100, mouseY + 100);
 }

@@ -14,6 +14,7 @@ void startButtonClicked() {
     startMenuOpened = true;
     progressMenuOpened = false;
     textToWrite.text = "[press a key to start]";
+    unwrittenText = "ciao questo e un testo a caso provalo";
   }
 }
 
@@ -47,7 +48,12 @@ void backToMenuButtonClicked() {
     backMenuOpened = false;
     startMenuOpened = false;
     progressMenuOpened = false;
+
     exerciseActivable = true;
+    exerciseActive = false;
+    writtenText = " ";
+    correctText = " ";
+    wrongText = " ";
   }
 }
 

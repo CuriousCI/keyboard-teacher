@@ -49,9 +49,10 @@ Key[] keysOfKeyboard = new Key[117];
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
   easyModeActive = false, normalModeActive = false, hardModeActive = true, exerciseActive = false, exerciseActivable = true; 
 int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
-  frame = 0, second = 0, charactersToWrite = 0, writtenCharacters = 0, correctCharacters = 0, wrongCharacters = 0, beats = 0, 
-  textX, textY = 50, MAX_LINES = 50, line = 0;
-String[] unwrittenText = new String[MAX_LINES], wrongText = new String[MAX_LINES], correctText = new String[MAX_LINES], writtenText = new String[MAX_LINES];
+  frame = 0, second = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
+String unwrittenText = "ciao questo e un testo a caso provalo", wrongText = "", correctText = "", writtenText = "";
+char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
+
 
 public void setup() {
    //size(displayWidth, displayHeight); frame.setLocation(0, 0);
@@ -60,14 +61,6 @@ public void setup() {
   textAlign(CENTER, CENTER);
 
   String[] keys = loadStrings("Keys.txt");
-  String[] Settings = loadStrings("Settings.txt");
-
-  for (int i = 0; i < MAX_LINES; i++) {
-    unwrittenText[i] = " ";
-    writtenText[i] = " ";
-    wrongText[i] = " ";
-    correctText[i] = " ";
-  }
 
   keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
   textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "[press a key to start]");
@@ -83,7 +76,7 @@ public void setup() {
 
   currentMode = new Box(width / 2, height / 2 + 164, 250, 50, "");
   currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "");
-  currentUser.text = Settings[0].substring(0, Settings[0].length());
+  currentUser.text = "current user: standard";
 
   start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
   settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
@@ -130,27 +123,27 @@ public void draw() {
 
   changeMenuVisibility();
 
-  mainMenu();
+  if (mainMenuOpened) mainMenu();
+  if (startMenuOpened) startMenu();
+  if (settingsMenuOpened) settingsMenu();
+  if (progressMenuOpened) progressMenu();
+  currentData();
   backMenu();
-  settingsMenu();
-  startMenu();
-  progressMenu();
+
+  fill(0);
+  text(mouseX, mouseX + 100, mouseY + 150);
+  text(mouseY, mouseX + 100, mouseY + 100);
 }
 public void mainMenu() {
   start.show(mainMenuVisibility);
   startButtonClicked();
 
-  settings.x = width/2;
-  settings.y =  height/2;
-  settings.selfWidth = 250;
-  settings.selfHeight = 75;
+  settings.setData(width/2, height/2, 250, 75);
   settings.show(mainMenuVisibility);
   settingsButtonClicked();
 
   progress.show(mainMenuVisibility);
   progressButtonClicked();
-
-  currentData();
 }
 
 public void startMenu() {
@@ -158,35 +151,30 @@ public void startMenu() {
     keyboard.staticShow(startMenuVisibility);
     textToWrite.selfHeight = 275;
     textToWrite.y = 275 / 2 + 25;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - (3 * 60 + 230);
-    indicatorsBar.staticShow(startMenuVisibility);
     keyboard();
   } else if (normalModeActive) {
     keyboard.staticShow(startMenuVisibility);
     textToWrite.selfHeight = 275;
     textToWrite.y = 275 / 2 + 25;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - (3 * 60 + 230);
-    indicatorsBar.staticShow(startMenuVisibility);
     keyboard();
   } else if (hardModeActive) {
     textToWrite.selfHeight = 580;
     textToWrite.y = 320;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - 100;
-    indicatorsBar.staticShow(startMenuVisibility);
-  }
+  }  
+  textToWrite.staticShow(startMenuVisibility);
+  indicatorsBar.staticShow(startMenuVisibility);
+
   exercise();
 }
 
 public void settingsMenu() {
-  settings.x = width/2;
-  settings.y =  height/2-200;
-  settings.selfWidth = 300;
-  settings.selfHeight = 90;
+  settings.setData(width/2, height/2-200, 300, 90);
+  settings.setColors(0xff0021F0, 0xff0021F0, 0xffF021FF);
 
-  settings.show(settingsMenuVisibility);
+  settings.staticShow(settingsMenuVisibility);
   easyMode.show(settingsMenuVisibility);
   easyModeButtonClicked();
   normalMode.show(settingsMenuVisibility);
@@ -215,21 +203,17 @@ public void currentData() {
   currentUser.textSize = currentUser.selfWidth / currentUser.text.length() * 2; 
 
   if (progressMenuOpened && mainMenuVisibility == 0) {
-    currentMode.x = 640; 
-    currentMode.y = 50; 
-    currentUser.x = 900; 
-    currentUser.y = 50;
-  } else if (mainMenuOpened && progressMenuVisibility == 0) {
-    currentMode.x = width / 2; 
-    currentMode.y = height / 2 + 164; 
-    currentUser.x = width / 2; 
-    currentUser.y = height / 2 + 218;
+    currentMode.setCoordinates(640, 50);
+    currentUser.setCoordinates(900, 50);
+  } else if (mainMenuOpened && progressMenuVisibility == 0) {  
+    currentMode.setCoordinates(width / 2, height / 2 + 164);
+    currentUser.setCoordinates(width / 2, height / 2 + 218);
   }
 
   if (((!mainMenuOpened && settingsMenuOpened) || (mainMenuOpened && !settingsMenuOpened)) && (startMenuVisibility == 0 && progressMenuVisibility == 0)) {
     currentMode.staticShow(300);
     currentUser.staticShow(300);
-  } else {
+  } else if (progressMenuOpened) {
     currentMode.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
     currentUser.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
   }
@@ -254,110 +238,102 @@ public void exercise() {
     exerciseActivable = false;
     textToWrite.text = "";
     frame = 0;
+    keyPressed = false;
+    delay(100);
   }
   if (exerciseActive) {
     textAlign(LEFT, CENTER);
     textSize(25);
-    textX = width / 2 - 925 / 2 + 14; 
-    unwrittenText[line] = "Ciao questo e un testo casuale per testare la funzionalita del programma";
-    textSize(22);
+
     if (keyPressed) {
-      writtenText[line] += key;
-      correctText[line] += key;
-      wrongText[line] += key;
-      String strangeText = unwrittenText[line];
-      unwrittenText[line] = " ";
-      for (int i = 0; i < writtenText[line].length(); i++) {
-        unwrittenText[line] += " ";
+      writtenText += key;
+      if (key == unwrittenText.charAt(writtenText.length() - 1)) {
+        correctText += key;
+        wrongText += '░';
+      } else {
+        correctText += '░';
+        wrongText += key;
       }
-      if (writtenText[line].length() < strangeText.length()) {
-        unwrittenText[line] += strangeText.substring(writtenText[line].length());
-      }
-      if (textWidth(writtenText[line]) > 890) line++;
+
+      String test = unwrittenText;
+      unwrittenText = " ";
+      for (int i = 1; i < writtenText.length(); i++) unwrittenText += ' ';          
+      if (writtenText.length() < test.length()) unwrittenText += test.substring(writtenText.length());
+
       beats++;
       keyPressed = false;
       delay(100);
     }
-    for (int i = 0; i <= line; i++) {
-      fill(200, 200, 200, startMenuVisibility);
-      text(unwrittenText[i], textX, textY  + i * 28);
-      if (easyModeActive) {
-        fill(0, 255, 0, startMenuVisibility);
-        text(correctText[i], textX - 5, textY  + i * 28);
-        fill(255, 0, 0, startMenuVisibility);
-        text(wrongText[i], textX - 5, textY  + i * 28);
-      } else {
-        fill(0, 0, 0, startMenuVisibility);
-        text(writtenText[i], textX - 5, textY + i * 28);
-      }
+
+    fill(200, 200, 200, startMenuVisibility);
+    matrix = assignText(unwrittenText);
+    display();
+    if (easyModeActive) {
+      fill(0, 255, 0, startMenuVisibility);
+      matrix = assignText(correctText);
+      display();
+      fill(255, 0, 0, startMenuVisibility);
+      matrix = assignText(wrongText);
+      display();
+    } else {
+      fill(0, 0, 0, startMenuVisibility);
+      matrix = assignText(writtenText);
+      display();
     }
     textAlign(CENTER, CENTER);
 
     indicators();
-    if (writtenText[line].length() > unwrittenText[line].length() + 1 && exerciseActive) {
+
+    if (writtenText.length() > unwrittenText.length() - 1 && exerciseActive) {
       exerciseActive = false;
       textToWrite.text = "[Exercise is over! Good job!]";
-      for (int i = 0; i <= line; i++) {
-        writtenText[i] = " ";
-      }
-      line = 0;
       textToWrite.staticShow(300);
+      writtenText = " ";
+      correctText = " ";
+      wrongText = " ";
     }
   }
 }
 
-public void indicators() {
+public void indicators() {  
   frame++;
   if (frame >= PApplet.parseInt(frameRate)) {
     second++;
     frame = 0;
   }
+
   if (easyModeActive || normalModeActive) {
-    beatsPerMinute.x = width / 2 - 306; 
-    beatsPerMinute.y = height - 433; 
-    charactersToWriteBox.x = width / 2 - 306; 
-    charactersToWriteBox.y = height - 387; 
-    writtenCharactersBox.x = width / 2; 
-    writtenCharactersBox.y = height - 387; 
-    time.x = width / 2; 
-    time.y = height - 433; 
-    percentageOfCompletion.x = width / 2 + 306; 
-    percentageOfCompletion.y = height - 433; 
-    percentageOfCorrectText.x =width / 2 + 306; 
-    percentageOfCorrectText.y = height - 387;
+    beatsPerMinute.setCoordinates(width / 2 - 306, height - 433);
+    charactersToWriteBox.setCoordinates(width / 2 - 306, height - 387);
+    writtenCharactersBox.setCoordinates(width / 2, height - 387);
+    time.setCoordinates(width / 2, height - 433);
+    percentageOfCompletion.setCoordinates(width / 2 + 306, height - 433);
+    percentageOfCorrectText.setCoordinates(width / 2 + 306, height - 387);
   } else if (hardModeActive) {
-    beatsPerMinute.x = width / 2 - 306; 
-    beatsPerMinute.y = height - 123; 
-    charactersToWriteBox.x = width / 2 - 306; 
-    charactersToWriteBox.y = height - 77; 
-    writtenCharactersBox.x = width / 2; 
-    writtenCharactersBox.y = height - 77; 
-    time.x = width / 2; 
-    time.y = height - 123; 
-    percentageOfCompletion.x = width / 2 + 306; 
-    percentageOfCompletion.y = height - 123; 
-    percentageOfCorrectText.x =width / 2 + 306; 
-    percentageOfCorrectText.y = height - 77;
+    beatsPerMinute.setCoordinates(width / 2 - 306, height - 123);
+    charactersToWriteBox.setCoordinates(width / 2 - 306, height - 77);
+    writtenCharactersBox.setCoordinates(width / 2, height - 77);
+    time.setCoordinates(width / 2, height - 123);
+    percentageOfCompletion.setCoordinates(width / 2 + 306, height - 123);
+    percentageOfCorrectText.setCoordinates(width / 2 + 306, height - 77);
   }
 
-  charactersToWrite = 0;
-  writtenCharacters = 0;
-  correctCharacters = 0;
-  wrongCharacters = 0;
-  for (int i = 0; i < MAX_LINES; i++) {
-    charactersToWrite += unwrittenText[i].length() - writtenText[i].length();
-    writtenCharacters += writtenText[i].length();
-    correctCharacters += correctText[i].length();
-    wrongCharacters += wrongText[i].length();
+  int charactersToWrite = unwrittenText.length(), writtenCharacters = writtenText.length(), correctCharacters = 0, wrongCharacters = 0;
+  for (int i = 0; i < writtenText.length(); i++) {
+    if (correctText.charAt(i) != '░') {
+      correctCharacters++;
+    } else if (wrongText.charAt(i) != '░') {
+      wrongCharacters++;
+    }
   }
 
-  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 && correctCharacters != 0 && wrongCharacters != 0) {
+  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 /*&& correctCharacters != 0 && wrongCharacters != 0*/) {
     beatsPerMinute.text = "BEATS/MINUTE: " + PApplet.parseInt(beats * 60 / second);
     charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
     writtenCharactersBox.text = "WRITTEN CHARACTERS: " + writtenCharacters;
     time.text = "TIME: " + second; 
-    percentageOfCompletion.text = "COMPLETION: " + PApplet.parseInt(writtenCharacters * 100 / charactersToWrite) + "%";
-    percentageOfCorrectText.text = "CORRECT TEXT:" + PApplet.parseInt(correctCharacters * 100 / writtenCharacters) + "%";
+    percentageOfCompletion.text = "COMPLETION: " + PApplet.parseInt((writtenCharacters * 100) / charactersToWrite) + "%";
+    percentageOfCorrectText.text = "CORRECT TEXT:" + PApplet.parseInt((correctCharacters * 100) / writtenCharacters) + "%";
   }
 
   beatsPerMinute.staticShow(startMenuVisibility);
@@ -366,6 +342,35 @@ public void indicators() {
   time.staticShow(startMenuVisibility);
   percentageOfCompletion.staticShow(startMenuVisibility);
   percentageOfCorrectText.staticShow(startMenuVisibility);
+}
+
+public char[][] assignText(String text) {
+  char[][] array = new char[MAX_ROWS][MAX_COLUMNS];
+  int row = 0, index = 0;
+  for (int column = 0; column < MAX_COLUMNS && row < MAX_ROWS; column++) {
+    if (index < text.length()) {
+      array[row][column] = text.charAt(index);
+    } else {
+      array[row][column] = '░';
+    }
+    if (column == MAX_COLUMNS - 1 && row < MAX_ROWS - 1) {
+      row++;
+      column = -1;
+    }
+    index++;
+  }
+  return array;
+}
+
+public void display() {
+  textAlign(CENTER, CENTER);
+  for (int i = 0; i < MAX_ROWS; i++) {
+    for (int j = 0; j < MAX_COLUMNS; j++) {
+      if (matrix[i][j] != '░') {
+        text(matrix[i][j], 249 + j * 10, 65 + i * 27);
+      }
+    }
+  }
 }
 
 public void changeMenuVisibility() { // Function switching from a menu to another
@@ -401,21 +406,36 @@ class Box {
   String text;
   int[] selfColor = new int[3];
 
-  Box(int X, int Y, int W, int H, String T) {
-    x = X;
-    y = Y;
-    selfWidth = W;
-    selfHeight = H;
+  Box(int x, int y, int w, int h, String text) {
+    this.x = x;
+    this.y = y;
+    selfWidth = w;
+    selfHeight = h;
 
     setColors(50, 0xffE3E3E3, 20);
 
-    text = T;
+    this.text = text;
     if (text.length() == 0) {
       textSize = 1;
     } else {
       textSize = selfWidth / text.length();
     }
     edgeRoundness = 10;
+  }
+
+  public void setCoordinates(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public void setDimensions(int w, int h) {
+    selfWidth = w;
+    selfHeight = h;
+  }
+
+  public void setData(int x, int y, int w, int h) {
+    setCoordinates(x, y);
+    setDimensions(w, h);
   }
 
   public void setColors(int stroke, int fill, int text) {
@@ -440,8 +460,8 @@ class Box {
 }
 class Button extends Box {
 
-  Button(int X, int Y, int W, int H, String T) {
-    super(X, Y, W, H, T);
+  Button(int x, int y, int w, int h, String text) {
+    super(x, y, w, h, text);
     textAlign(CENTER, CENTER);
     edgeRoundness = (selfWidth - selfHeight / 2) / 10;
   }
@@ -495,6 +515,7 @@ public void startButtonClicked() {
     startMenuOpened = true;
     progressMenuOpened = false;
     textToWrite.text = "[press a key to start]";
+    unwrittenText = "ciao questo e un testo a caso provalo";
   }
 }
 
@@ -528,7 +549,12 @@ public void backToMenuButtonClicked() {
     backMenuOpened = false;
     startMenuOpened = false;
     progressMenuOpened = false;
+
     exerciseActivable = true;
+    exerciseActive = false;
+    writtenText = " ";
+    correctText = " ";
+    wrongText = " ";
   }
 }
 
@@ -560,8 +586,8 @@ public void hardModeButtonClicked() {
 }
 class Key extends Box {
 
-  Key(int X, int Y, int W, int H, String T) {
-    super(X, Y, W, H, T);
+  Key(int x, int y, int w, int h, String text) {
+    super(x, y, w, h, text);
     if (textSize != 1) {
       textSize = selfWidth / text.length() / 2 + 10;
     }
@@ -595,7 +621,7 @@ class Key extends Box {
 }
   public void settings() {  fullScreen (); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "--present", "--window-color=#666666", "--hide-stop", "KeyboardTeacher" };
+    String[] appletArgs = new String[] { "KeyboardTeacher" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {

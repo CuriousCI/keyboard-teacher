@@ -1,7 +1,7 @@
 class Key extends Box {
 
-  Key(int X, int Y, int W, int H, String T) {
-    super(X, Y, W, H, T);
+  Key(int x, int y, int w, int h, String text) {
+    super(x, y, w, h, text);
     if (textSize != 1) {
       textSize = selfWidth / text.length() / 2 + 10;
     }

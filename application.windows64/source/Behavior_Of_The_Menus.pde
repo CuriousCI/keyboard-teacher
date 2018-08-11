@@ -2,17 +2,12 @@ void mainMenu() {
   start.show(mainMenuVisibility);
   startButtonClicked();
 
-  settings.x = width/2;
-  settings.y =  height/2;
-  settings.selfWidth = 250;
-  settings.selfHeight = 75;
+  settings.setData(width/2, height/2, 250, 75);
   settings.show(mainMenuVisibility);
   settingsButtonClicked();
 
   progress.show(mainMenuVisibility);
   progressButtonClicked();
-
-  currentData();
 }
 
 void startMenu() {
@@ -20,35 +15,30 @@ void startMenu() {
     keyboard.staticShow(startMenuVisibility);
     textToWrite.selfHeight = 275;
     textToWrite.y = 275 / 2 + 25;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - (3 * 60 + 230);
-    indicatorsBar.staticShow(startMenuVisibility);
     keyboard();
   } else if (normalModeActive) {
     keyboard.staticShow(startMenuVisibility);
     textToWrite.selfHeight = 275;
     textToWrite.y = 275 / 2 + 25;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - (3 * 60 + 230);
-    indicatorsBar.staticShow(startMenuVisibility);
     keyboard();
   } else if (hardModeActive) {
     textToWrite.selfHeight = 580;
     textToWrite.y = 320;
-    textToWrite.staticShow(startMenuVisibility);
     indicatorsBar.y = height - 100;
-    indicatorsBar.staticShow(startMenuVisibility);
-  }
+  }  
+  textToWrite.staticShow(startMenuVisibility);
+  indicatorsBar.staticShow(startMenuVisibility);
+
   exercise();
 }
 
 void settingsMenu() {
-  settings.x = width/2;
-  settings.y =  height/2-200;
-  settings.selfWidth = 300;
-  settings.selfHeight = 90;
+  settings.setData(width/2, height/2-200, 300, 90);
+  settings.setColors(#0021F0, #0021F0, #F021FF);
 
-  settings.show(settingsMenuVisibility);
+  settings.staticShow(settingsMenuVisibility);
   easyMode.show(settingsMenuVisibility);
   easyModeButtonClicked();
   normalMode.show(settingsMenuVisibility);
@@ -77,21 +67,17 @@ void currentData() {
   currentUser.textSize = currentUser.selfWidth / currentUser.text.length() * 2; 
 
   if (progressMenuOpened && mainMenuVisibility == 0) {
-    currentMode.x = 640; 
-    currentMode.y = 50; 
-    currentUser.x = 900; 
-    currentUser.y = 50;
-  } else if (mainMenuOpened && progressMenuVisibility == 0) {
-    currentMode.x = width / 2; 
-    currentMode.y = height / 2 + 164; 
-    currentUser.x = width / 2; 
-    currentUser.y = height / 2 + 218;
+    currentMode.setCoordinates(640, 50);
+    currentUser.setCoordinates(900, 50);
+  } else if (mainMenuOpened && progressMenuVisibility == 0) {  
+    currentMode.setCoordinates(width / 2, height / 2 + 164);
+    currentUser.setCoordinates(width / 2, height / 2 + 218);
   }
 
   if (((!mainMenuOpened && settingsMenuOpened) || (mainMenuOpened && !settingsMenuOpened)) && (startMenuVisibility == 0 && progressMenuVisibility == 0)) {
     currentMode.staticShow(300);
     currentUser.staticShow(300);
-  } else {
+  } else if (progressMenuOpened) {
     currentMode.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
     currentUser.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
   }
@@ -116,110 +102,102 @@ void exercise() {
     exerciseActivable = false;
     textToWrite.text = "";
     frame = 0;
+    keyPressed = false;
+    delay(100);
   }
   if (exerciseActive) {
     textAlign(LEFT, CENTER);
     textSize(25);
-    textX = width / 2 - 925 / 2 + 14; 
-    unwrittenText[line] = "Ciao questo e un testo casuale per testare la funzionalita del programma";
-    textSize(22);
+
     if (keyPressed) {
-      writtenText[line] += key;
-      correctText[line] += key;
-      wrongText[line] += key;
-      String strangeText = unwrittenText[line];
-      unwrittenText[line] = " ";
-      for (int i = 0; i < writtenText[line].length(); i++) {
-        unwrittenText[line] += " ";
+      writtenText += key;
+      if (key == unwrittenText.charAt(writtenText.length() - 1)) {
+        correctText += key;
+        wrongText += '░';
+      } else {
+        correctText += '░';
+        wrongText += key;
       }
-      if (writtenText[line].length() < strangeText.length()) {
-        unwrittenText[line] += strangeText.substring(writtenText[line].length());
-      }
-      if (textWidth(writtenText[line]) > 890) line++;
+
+      String test = unwrittenText;
+      unwrittenText = " ";
+      for (int i = 1; i < writtenText.length(); i++) unwrittenText += ' ';          
+      if (writtenText.length() < test.length()) unwrittenText += test.substring(writtenText.length());
+
       beats++;
       keyPressed = false;
       delay(100);
     }
-    for (int i = 0; i <= line; i++) {
-      fill(200, 200, 200, startMenuVisibility);
-      text(unwrittenText[i], textX, textY  + i * 28);
-      if (easyModeActive) {
-        fill(0, 255, 0, startMenuVisibility);
-        text(correctText[i], textX - 5, textY  + i * 28);
-        fill(255, 0, 0, startMenuVisibility);
-        text(wrongText[i], textX - 5, textY  + i * 28);
-      } else {
-        fill(0, 0, 0, startMenuVisibility);
-        text(writtenText[i], textX - 5, textY + i * 28);
-      }
+
+    fill(200, 200, 200, startMenuVisibility);
+    matrix = assignText(unwrittenText);
+    display();
+    if (easyModeActive) {
+      fill(0, 255, 0, startMenuVisibility);
+      matrix = assignText(correctText);
+      display();
+      fill(255, 0, 0, startMenuVisibility);
+      matrix = assignText(wrongText);
+      display();
+    } else {
+      fill(0, 0, 0, startMenuVisibility);
+      matrix = assignText(writtenText);
+      display();
     }
     textAlign(CENTER, CENTER);
 
     indicators();
-    if (writtenText[line].length() > unwrittenText[line].length() + 1 && exerciseActive) {
+
+    if (writtenText.length() > unwrittenText.length() - 1 && exerciseActive) {
       exerciseActive = false;
       textToWrite.text = "[Exercise is over! Good job!]";
-      for (int i = 0; i <= line; i++) {
-        writtenText[i] = " ";
-      }
-      line = 0;
       textToWrite.staticShow(300);
+      writtenText = " ";
+      correctText = " ";
+      wrongText = " ";
     }
   }
 }
 
-void indicators() {
+void indicators() {  
   frame++;
   if (frame >= int(frameRate)) {
     second++;
     frame = 0;
   }
+
   if (easyModeActive || normalModeActive) {
-    beatsPerMinute.x = width / 2 - 306; 
-    beatsPerMinute.y = height - 433; 
-    charactersToWriteBox.x = width / 2 - 306; 
-    charactersToWriteBox.y = height - 387; 
-    writtenCharactersBox.x = width / 2; 
-    writtenCharactersBox.y = height - 387; 
-    time.x = width / 2; 
-    time.y = height - 433; 
-    percentageOfCompletion.x = width / 2 + 306; 
-    percentageOfCompletion.y = height - 433; 
-    percentageOfCorrectText.x =width / 2 + 306; 
-    percentageOfCorrectText.y = height - 387;
+    beatsPerMinute.setCoordinates(width / 2 - 306, height - 433);
+    charactersToWriteBox.setCoordinates(width / 2 - 306, height - 387);
+    writtenCharactersBox.setCoordinates(width / 2, height - 387);
+    time.setCoordinates(width / 2, height - 433);
+    percentageOfCompletion.setCoordinates(width / 2 + 306, height - 433);
+    percentageOfCorrectText.setCoordinates(width / 2 + 306, height - 387);
   } else if (hardModeActive) {
-    beatsPerMinute.x = width / 2 - 306; 
-    beatsPerMinute.y = height - 123; 
-    charactersToWriteBox.x = width / 2 - 306; 
-    charactersToWriteBox.y = height - 77; 
-    writtenCharactersBox.x = width / 2; 
-    writtenCharactersBox.y = height - 77; 
-    time.x = width / 2; 
-    time.y = height - 123; 
-    percentageOfCompletion.x = width / 2 + 306; 
-    percentageOfCompletion.y = height - 123; 
-    percentageOfCorrectText.x =width / 2 + 306; 
-    percentageOfCorrectText.y = height - 77;
+    beatsPerMinute.setCoordinates(width / 2 - 306, height - 123);
+    charactersToWriteBox.setCoordinates(width / 2 - 306, height - 77);
+    writtenCharactersBox.setCoordinates(width / 2, height - 77);
+    time.setCoordinates(width / 2, height - 123);
+    percentageOfCompletion.setCoordinates(width / 2 + 306, height - 123);
+    percentageOfCorrectText.setCoordinates(width / 2 + 306, height - 77);
   }
 
-  charactersToWrite = 0;
-  writtenCharacters = 0;
-  correctCharacters = 0;
-  wrongCharacters = 0;
-  for (int i = 0; i < MAX_LINES; i++) {
-    charactersToWrite += unwrittenText[i].length() - writtenText[i].length();
-    writtenCharacters += writtenText[i].length();
-    correctCharacters += correctText[i].length();
-    wrongCharacters += wrongText[i].length();
+  int charactersToWrite = unwrittenText.length(), writtenCharacters = writtenText.length(), correctCharacters = 0, wrongCharacters = 0;
+  for (int i = 0; i < writtenText.length(); i++) {
+    if (correctText.charAt(i) != '░') {
+      correctCharacters++;
+    } else if (wrongText.charAt(i) != '░') {
+      wrongCharacters++;
+    }
   }
 
-  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 && correctCharacters != 0 && wrongCharacters != 0) {
+  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 /*&& correctCharacters != 0 && wrongCharacters != 0*/) {
     beatsPerMinute.text = "BEATS/MINUTE: " + int(beats * 60 / second);
     charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
     writtenCharactersBox.text = "WRITTEN CHARACTERS: " + writtenCharacters;
     time.text = "TIME: " + second; 
-    percentageOfCompletion.text = "COMPLETION: " + int(writtenCharacters * 100 / charactersToWrite) + "%";
-    percentageOfCorrectText.text = "CORRECT TEXT:" + int(correctCharacters * 100 / writtenCharacters) + "%";
+    percentageOfCompletion.text = "COMPLETION: " + int((writtenCharacters * 100) / charactersToWrite) + "%";
+    percentageOfCorrectText.text = "CORRECT TEXT:" + int((correctCharacters * 100) / writtenCharacters) + "%";
   }
 
   beatsPerMinute.staticShow(startMenuVisibility);
@@ -228,6 +206,35 @@ void indicators() {
   time.staticShow(startMenuVisibility);
   percentageOfCompletion.staticShow(startMenuVisibility);
   percentageOfCorrectText.staticShow(startMenuVisibility);
+}
+
+char[][] assignText(String text) {
+  char[][] array = new char[MAX_ROWS][MAX_COLUMNS];
+  int row = 0, index = 0;
+  for (int column = 0; column < MAX_COLUMNS && row < MAX_ROWS; column++) {
+    if (index < text.length()) {
+      array[row][column] = text.charAt(index);
+    } else {
+      array[row][column] = '░';
+    }
+    if (column == MAX_COLUMNS - 1 && row < MAX_ROWS - 1) {
+      row++;
+      column = -1;
+    }
+    index++;
+  }
+  return array;
+}
+
+void display() {
+  textAlign(CENTER, CENTER);
+  for (int i = 0; i < MAX_ROWS; i++) {
+    for (int j = 0; j < MAX_COLUMNS; j++) {
+      if (matrix[i][j] != '░') {
+        text(matrix[i][j], 249 + j * 10, 65 + i * 27);
+      }
+    }
+  }
 }
 
 void changeMenuVisibility() { // Function switching from a menu to another

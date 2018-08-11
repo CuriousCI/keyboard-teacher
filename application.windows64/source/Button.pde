@@ -1,7 +1,7 @@
 class Button extends Box {
 
-  Button(int X, int Y, int W, int H, String T) {
-    super(X, Y, W, H, T);
+  Button(int x, int y, int w, int h, String text) {
+    super(x, y, w, h, text);
     textAlign(CENTER, CENTER);
     edgeRoundness = (selfWidth - selfHeight / 2) / 10;
   }
