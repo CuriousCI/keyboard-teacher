@@ -20,6 +20,7 @@ Button progress;
 
 Button close;
 Button backToMenu;
+Button restartExercise; 
 
 Button easyMode;
 Button normalMode;
@@ -32,19 +33,21 @@ Key[] keysOfKeyboard = new Key[117];
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
   easyModeActive = false, normalModeActive = false, hardModeActive = true, exerciseActive = false, exerciseActivable = true; 
-int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
+int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, restartExerciseButtonVisibility = 0, transitionSpeed = 30, 
   frame = 0, second = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
 String unwrittenText = "ciao questo e un testo a caso provalo", wrongText = "", correctText = "", writtenText = "";
+String[]keys, sentences;
 char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
 
 
 void setup() {
-  fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
+  fullScreen (); //size(600, 600); //frame.setLocation(0, 0);
   rectMode(CENTER);
   textFont = loadFont("AgencyFB-Bold-48.vlw");
   textAlign(CENTER, CENTER);
 
-  String[] keys = loadStrings("Keys.txt");
+  keys = loadStrings("Keys.txt");
+  sentences = loadStrings("Sentences.txt");
 
   keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
   textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "[press a key to start]");
@@ -68,6 +71,7 @@ void setup() {
 
   close = new Button(width - 100, 50, 100, 50, "close"); 
   backToMenu = new Button(width - 100, 110, 100, 50, "menu");
+  restartExercise = new Button(width - 100, 170, 100, 50, "restart");
 
   easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "EasyMode"); 
   normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
@@ -94,7 +98,7 @@ void setup() {
     if (keyTextASCII >= int('0') && keyTextASCII <= int('9') || (keyTextASCII >= int('a') && keyTextASCII <= int('z')) && keyText.length() == 1) {
       keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
     } else {
-      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, "");
+      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, "░");
     }
   }
 }
@@ -113,8 +117,4 @@ void draw() {
   if (progressMenuOpened) progressMenu();
   currentData();
   backMenu();
-
-  fill(0);
-  text(mouseX, mouseX + 100, mouseY + 150);
-  text(mouseY, mouseX + 100, mouseY + 100);
 }

@@ -13,8 +13,10 @@ void startButtonClicked() {
     backMenuOpened = true;
     startMenuOpened = true;
     progressMenuOpened = false;
-    textToWrite.text = "[press a key to start]";
-    unwrittenText = "ciao questo e un testo a caso provalo";
+
+    resetText();
+    exerciseActivable = true;
+    exerciseActive = false;
   }
 }
 
@@ -48,12 +50,18 @@ void backToMenuButtonClicked() {
     backMenuOpened = false;
     startMenuOpened = false;
     progressMenuOpened = false;
+  }
+}
 
+void restartExerciseButtonClicked() {
+  if (restartExercise.selfClicked(exerciseActive || (!exerciseActive && !exerciseActivable))) {
     exerciseActivable = true;
     exerciseActive = false;
-    writtenText = " ";
-    correctText = " ";
-    wrongText = " ";
+
+    frame = 0;
+    second = 0;
+
+    resetText();
   }
 }
 

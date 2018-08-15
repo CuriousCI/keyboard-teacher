@@ -27,9 +27,20 @@ void startMenu() {
     textToWrite.selfHeight = 580;
     textToWrite.y = 320;
     indicatorsBar.y = height - 100;
-  }  
+  }
+  if (exerciseActive) textToWrite.setColors(50, #E3E3E3, 1000); 
+  else textToWrite.setColors(50, #E3E3E3, 20);
+
   textToWrite.staticShow(startMenuVisibility);
   indicatorsBar.staticShow(startMenuVisibility);
+
+  if ((exerciseActive || (!exerciseActive && !exerciseActivable)) && restartExerciseButtonVisibility != 300) {
+    restartExerciseButtonVisibility += transitionSpeed;
+  } else if (!exerciseActive && restartExerciseButtonVisibility != 0) {
+    restartExerciseButtonVisibility -= transitionSpeed;
+  }
+  restartExerciseButtonClicked();
+  restartExercise.show(restartExerciseButtonVisibility);
 
   exercise();
 }
@@ -91,7 +102,12 @@ void backMenu() {
 void keyboard() {
   if (startMenuOpened && startMenuVisibility >= 150) {
     for (int i = 116; i >= 0; i--) {
-      keysOfKeyboard[i].show(300);
+      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length())) {
+        keysOfKeyboard[i].setColors(0, 0, 255);
+        keysOfKeyboard[i].staticShow(300);
+      } else {
+        keysOfKeyboard[i].show(300);
+      }
     }
   }
 }
@@ -103,13 +119,13 @@ void exercise() {
     textToWrite.text = "";
     frame = 0;
     keyPressed = false;
-    delay(100);
   }
+
   if (exerciseActive) {
     textAlign(LEFT, CENTER);
     textSize(25);
-
-    if (keyPressed) {
+    textToWrite.text = "";
+    if (keyPressed && key != '\t' && keyCode != SHIFT && keyCode != CONTROL && keyCode != BACKSPACE && keyCode != ENTER && keyCode != RETURN) {
       writtenText += key;
       if (key == unwrittenText.charAt(writtenText.length() - 1)) {
         correctText += key;
@@ -118,50 +134,47 @@ void exercise() {
         correctText += '░';
         wrongText += key;
       }
-
       String test = unwrittenText;
       unwrittenText = " ";
       for (int i = 1; i < writtenText.length(); i++) unwrittenText += ' ';          
       if (writtenText.length() < test.length()) unwrittenText += test.substring(writtenText.length());
-
       beats++;
       keyPressed = false;
-      delay(100);
     }
 
-    fill(200, 200, 200, startMenuVisibility);
     matrix = assignText(unwrittenText);
-    display();
-    if (easyModeActive) {
-      fill(0, 255, 0, startMenuVisibility);
+    display(color(200, 200, 200, startMenuVisibility));
+    if (easyModeActive) {     
       matrix = assignText(correctText);
-      display();
-      fill(255, 0, 0, startMenuVisibility);
+      display(color(0, 255, 0, startMenuVisibility));
       matrix = assignText(wrongText);
-      display();
+      display(color(255, 0, 0, startMenuVisibility));
     } else {
-      fill(0, 0, 0, startMenuVisibility);
       matrix = assignText(writtenText);
-      display();
+      display(color(0, 0, 0, startMenuVisibility));
     }
     textAlign(CENTER, CENTER);
 
     indicators();
 
-    if (writtenText.length() > unwrittenText.length() - 1 && exerciseActive) {
+    if (writtenText.length() >= unwrittenText.length() && exerciseActive) {
       exerciseActive = false;
-      textToWrite.text = "[Exercise is over! Good job!]";
+      exerciseActivable = false;
+
+      textToWrite.text += "\n[EXERCISE IS OVER, GOOD JOB!]";
       textToWrite.staticShow(300);
-      writtenText = " ";
-      correctText = " ";
-      wrongText = " ";
+
+      unwrittenText = sentences[int(random(0, sentences.length - 1))];
+      writtenText = "";
+      correctText = "";
+      wrongText = "";
     }
   }
 }
 
 void indicators() {  
   frame++;
-  if (frame >= int(frameRate)) {
+  if (frame >= int(frameRate) || second == 0) {
     second++;
     frame = 0;
   }
@@ -182,23 +195,24 @@ void indicators() {
     percentageOfCorrectText.setCoordinates(width / 2 + 306, height - 77);
   }
 
-  int charactersToWrite = unwrittenText.length(), writtenCharacters = writtenText.length(), correctCharacters = 0, wrongCharacters = 0;
+  int charactersToWrite = unwrittenText.length(), writtenCharacters = writtenText.length(), correctCharacters = 0;
   for (int i = 0; i < writtenText.length(); i++) {
     if (correctText.charAt(i) != '░') {
       correctCharacters++;
-    } else if (wrongText.charAt(i) != '░') {
-      wrongCharacters++;
     }
   }
 
-  if (beats != 0 && second != 0 && charactersToWrite != 0 && writtenCharacters != 0 /*&& correctCharacters != 0 && wrongCharacters != 0*/) {
-    beatsPerMinute.text = "BEATS/MINUTE: " + int(beats * 60 / second);
-    charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
-    writtenCharactersBox.text = "WRITTEN CHARACTERS: " + writtenCharacters;
-    time.text = "TIME: " + second; 
-    percentageOfCompletion.text = "COMPLETION: " + int((writtenCharacters * 100) / charactersToWrite) + "%";
-    percentageOfCorrectText.text = "CORRECT TEXT:" + int((correctCharacters * 100) / writtenCharacters) + "%";
-  }
+  if (writtenCharacters == 0) {
+    writtenCharacters = 1;
+  }  
+  beatsPerMinute.text = "BEATS/MINUTE: " + int(beats * 60 / second);
+  percentageOfCompletion.text = "COMPLETION: " + int((writtenCharacters * 100) / charactersToWrite) + "%";
+  percentageOfCorrectText.text = "CORRECT TEXT: " + int((correctCharacters * 100) / writtenCharacters) + "%";
+  writtenCharactersBox.text = "WRITTEN CHARACTERS: " + writtenCharacters;
+  charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
+  time.text = "TIME: " + second; 
+
+  textToWrite.text = beatsPerMinute.text + "\n" + writtenCharactersBox.text + "\n" + time.text + "\n" + percentageOfCorrectText.text;
 
   beatsPerMinute.staticShow(startMenuVisibility);
   charactersToWriteBox.staticShow(startMenuVisibility);
@@ -207,6 +221,7 @@ void indicators() {
   percentageOfCompletion.staticShow(startMenuVisibility);
   percentageOfCorrectText.staticShow(startMenuVisibility);
 }
+
 
 char[][] assignText(String text) {
   char[][] array = new char[MAX_ROWS][MAX_COLUMNS];
@@ -226,15 +241,29 @@ char[][] assignText(String text) {
   return array;
 }
 
-void display() {
+void display(color textFill) {
   textAlign(CENTER, CENTER);
+  int index = 0;
   for (int i = 0; i < MAX_ROWS; i++) {
     for (int j = 0; j < MAX_COLUMNS; j++) {
       if (matrix[i][j] != '░') {
+        fill(250);
+        stroke(250);
+        if (index < writtenText.length()) rect(249 + j * 10, 65 + i * 27, 10, 27, 2);
+        fill(textFill);
         text(matrix[i][j], 249 + j * 10, 65 + i * 27);
+        index++;
       }
     }
   }
+}
+
+void resetText() {
+  textToWrite.text = "[press a key to start]";
+  unwrittenText = sentences[int(random(0, sentences.length - 1))];
+  writtenText = "";
+  correctText = "";
+  wrongText = "";
 }
 
 void changeMenuVisibility() { // Function switching from a menu to another
@@ -250,6 +279,8 @@ void changeMenuVisibility() { // Function switching from a menu to another
       startMenuVisibility += transitionSpeed;
     } else if (progressMenuOpened && progressMenuVisibility != 300) {
       progressMenuVisibility += transitionSpeed;
+    } else if (exerciseActive && restartExerciseButtonVisibility != 300) {
+      restartExerciseButtonVisibility += transitionSpeed;
     }
   } else if (mainMenuOpened && mainMenuVisibility == 0 && backMenuVisibility != 0) {
     backMenuVisibility -= transitionSpeed;
@@ -261,6 +292,9 @@ void changeMenuVisibility() { // Function switching from a menu to another
     }
     if (!progressMenuOpened && progressMenuVisibility != 0) {
       progressMenuVisibility -= transitionSpeed;
+    }
+    if (!exerciseActive && restartExerciseButtonVisibility != 0) {
+      restartExerciseButtonVisibility -= transitionSpeed;
     }
   }
 }
