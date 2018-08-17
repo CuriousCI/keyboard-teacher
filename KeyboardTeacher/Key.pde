@@ -15,18 +15,21 @@ class Key extends Box {
 
   void changeDynamicColors() {
     if (keyPressed) {
-      if (text.length() == 1 && key == text.charAt(0)) {
-        setColors(0, #D0D0D0, 50);
-      } else {
-        //if (easyModeActive){
-        //  if (unwrittenText[line].charAt(writtenText[line].length()) == key){
-        //    setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
-        //  } else {
-        //    setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
-        //  }
-        //} else {
-        setColors(100, #D0D0D0, 90);
-        //}
+      if (normalModeActive) {
+        if (text.length() == 1 && key == text.charAt(0)) {
+          setColors(255, 255, 255);
+        }
+      } else if (easyModeActive) {
+        int sos = writtenText.length();
+        //if (sos == 0) sos = 1;
+        sos++;
+        if (text.length() == 1 && key == text.charAt(0) && key == unwrittenText.charAt(sos - 1)) {
+          setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
+        } else if (text.length() == 1 && key == text.charAt(0)) {
+          setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
+        } else {
+          setColors(100, #D0D0D0, 90);
+        }
       }
     } else {
       setColors(100, #D0D0D0, 90);

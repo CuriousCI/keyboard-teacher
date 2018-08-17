@@ -1,3 +1,2 @@
-hard
-current user: standard
-user: standard
+normal
+standard

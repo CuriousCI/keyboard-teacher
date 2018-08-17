@@ -59,8 +59,47 @@ void settingsMenu() {
 }
 
 void progressMenu() {
+  addUserButtonClicked();
   addUser.show(progressMenuVisibility);
-  selectUser.show(progressMenuVisibility);
+  //selectUser.show(progressMenuVisibility);
+
+  for (int i = 0; i < everySingleUser.length; i++) {
+    everySingleUser[i].show(progressMenuVisibility);
+  }
+
+  if (userNameWritable && userNameBoxVisibility != 300) {
+    userNameBoxVisibility += transitionSpeed;
+  } else if (!userNameWritable && userNameBoxVisibility != 0) {
+    userNameBoxVisibility -= transitionSpeed;
+  }
+
+
+  if (userNameWritable) {
+    if (keyPressed) {
+      if (key == ENTER) {
+        String[] TEST = new String[1];
+        TEST[0] = "Date " + day() + "/" + month() + "/" + year() + "  Hour " + hour() + ":" + minute() + ":" + second();
+
+        saveStrings((userName + ".txt"), TEST);
+        users = append(users, userName);
+        saveStrings("Users.txt", users);
+
+        everySingleUser = new Button[users.length];
+        for (int i = 0; i < everySingleUser.length; i++) {
+          everySingleUser[i] = new Button(165, 150 + i * 60, 200, 50, users[i]);
+          everySingleUser[i].edgeRoundness = 7;
+        }
+      }
+      if (key == BACKSPACE && userName.length() > 1) {
+        userName = userName.substring(0, userName.length() - 2);
+      } else if (key != CODED && key != '\t' && key != '\n' && key != '\b' && key != 'f' && key != '\r' && int(textWidth(userNameBox.text)) <= userNameBox.selfWidth - 20) {
+        userName += key;
+      }
+      userNameBox.text = userName;
+      delay(25);
+    }
+  }
+  userNameBox.staticShow(userNameBoxVisibility);
 }
 
 void currentData() {
@@ -101,8 +140,8 @@ void backMenu() {
 
 void keyboard() {
   if (startMenuOpened && startMenuVisibility >= 150) {
-    for (int i = 116; i >= 0; i--) {
-      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length())) {
+    for (int i = keysOfKeyboard.length - 1; i >= 0; i--) {
+      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length()) && keysOfKeyboard[i].text.length() == 1 && keyPressed == false) {
         keysOfKeyboard[i].setColors(0, 0, 255);
         keysOfKeyboard[i].staticShow(300);
       } else {
