@@ -46,22 +46,19 @@ void startMenu() {
 }
 
 void settingsMenu() {
-  settings.setData(width/2, height/2-200, 300, 90);
-  settings.setColors(#0021F0, #0021F0, #F021FF);
-
-  settings.staticShow(settingsMenuVisibility);
   easyMode.show(settingsMenuVisibility);
   easyModeButtonClicked();
   normalMode.show(settingsMenuVisibility);
   normalModeButtonClicked();
   hardMode.show(settingsMenuVisibility);
   hardModeButtonClicked();
+  selectText.show(settingsMenuVisibility);
 }
 
 void progressMenu() {
   addUserButtonClicked();
   addUser.show(progressMenuVisibility);
-  //selectUser.show(progressMenuVisibility);
+  removeUser.show(progressMenuVisibility);
 
   for (int i = 0; i < everySingleUser.length; i++) {
     everySingleUser[i].show(progressMenuVisibility);
@@ -75,10 +72,11 @@ void progressMenu() {
 
 
   if (userNameWritable) {
+    textSize(userNameBox.textSize);
     if (keyPressed) {
       if (key == ENTER) {
         String[] TEST = new String[1];
-        TEST[0] = "Date " + day() + "/" + month() + "/" + year() + "  Hour " + hour() + ":" + minute() + ":" + second();
+        TEST[0] = "CREATION Date " + day() + "/" + month() + "/" + year() + "  Hour " + hour() + ":" + minute() + ":" + second();
 
         saveStrings((userName + ".txt"), TEST);
         users = append(users, userName);
@@ -86,48 +84,55 @@ void progressMenu() {
 
         everySingleUser = new Button[users.length];
         for (int i = 0; i < everySingleUser.length; i++) {
-          everySingleUser[i] = new Button(165, 150 + i * 60, 200, 50, users[i]);
+          everySingleUser[i] = new Button(165, 150 + i * 60, 250, 50, users[i]);
           everySingleUser[i].edgeRoundness = 7;
         }
+
+        userNameWritable = false;
+        userName = "";
+        userNameBox.text = userName;
       }
-      if (key == BACKSPACE && userName.length() > 1) {
-        userName = userName.substring(0, userName.length() - 2);
-      } else if (key != CODED && key != '\t' && key != '\n' && key != '\b' && key != 'f' && key != '\r' && int(textWidth(userNameBox.text)) <= userNameBox.selfWidth - 20) {
+      if (key == BACKSPACE && userName.length() > 0) {
+        userName = userName.substring(0, userName.length() - 1);
+      } else if (key != CODED && key != '\t' && key != '\n' && key != '\b' && key != 'f' && key != '\r' && key != '.' && key != '?' && textWidth(userNameBox.text) < userNameBox.selfWidth - 60) {
         userName += key;
       }
       userNameBox.text = userName;
-      delay(25);
+      keyPressed = false;
+      //delay(75);
     }
   }
   userNameBox.staticShow(userNameBoxVisibility);
+
+  for (int i = 0; i < everySingleUser.length; i++) {
+    if (everySingleUser[i].selfClicked(progressMenuOpened)) {
+      currentUser.text = "user: " + everySingleUser[i].text;
+      setting[1] = everySingleUser[i].text;
+      saveStrings("Settings.txt", setting);
+      delay(100);
+    }
+  }
 }
 
 void currentData() {
   if (easyModeActive) {
-    currentMode.text = "current mode: [EASY]";
+    currentMode.text = "mode: [EASY]";
   } else if (normalModeActive) {
-    currentMode.text = "current mode: [NORMAL]";
+    currentMode.text = "mode: [NORMAL]";
   } else if (hardModeActive) {
-    currentMode.text = "current mode: [HARD]";
+    currentMode.text = "mode: [HARD]";
   }
 
-  currentMode.setColors(#0021F0, #0021F0, #F021FF);
   currentMode.textSize = currentMode.selfWidth / currentMode.text.length() * 2; 
-  currentUser.setColors(#0021F0, #0021F0, #F021FF);
   currentUser.textSize = currentUser.selfWidth / currentUser.text.length() * 2; 
 
-  if (progressMenuOpened && mainMenuVisibility == 0) {
-    currentMode.setCoordinates(640, 50);
-    currentUser.setCoordinates(900, 50);
-  } else if (mainMenuOpened && progressMenuVisibility == 0) {  
-    currentMode.setCoordinates(width / 2, height / 2 + 164);
-    currentUser.setCoordinates(width / 2, height / 2 + 218);
-  }
+  currentMode.setCoordinates(width - 50 - close.selfWidth - 10 - currentMode.selfWidth / 2, 50 + currentMode.selfHeight / 2);
+  currentUser.setCoordinates(width - 50 - close.selfWidth - 10 - currentMode.selfWidth - 10 - currentUser.selfWidth / 2, 50 + currentUser.selfHeight / 2);
 
-  if (((!mainMenuOpened && settingsMenuOpened) || (mainMenuOpened && !settingsMenuOpened)) && (startMenuVisibility == 0 && progressMenuVisibility == 0)) {
+  if (((!mainMenuOpened && settingsMenuOpened || progressMenuOpened) || (mainMenuOpened && !settingsMenuOpened && !progressMenuOpened)) && startMenuVisibility == 0) {
     currentMode.staticShow(300);
     currentUser.staticShow(300);
-  } else if (progressMenuOpened) {
+  } else {
     currentMode.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
     currentUser.staticShow(mainMenuVisibility + settingsMenuVisibility + progressMenuVisibility);
   }
@@ -140,12 +145,24 @@ void backMenu() {
 
 void keyboard() {
   if (startMenuOpened && startMenuVisibility >= 150) {
-    for (int i = keysOfKeyboard.length - 1; i >= 0; i--) {
-      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length()) && keysOfKeyboard[i].text.length() == 1 && keyPressed == false) {
+    for (int i = 0; i < keysOfKeyboard.length; i++) {
+      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length()) && keysOfKeyboard[i].text.length() == 1 /*&& keyPressed == false*/ && exerciseActive) {
         keysOfKeyboard[i].setColors(0, 0, 255);
-        keysOfKeyboard[i].staticShow(300);
+        keysOfKeyboard[i].staticShow(startMenuVisibility);
       } else {
-        keysOfKeyboard[i].show(300);
+        int currentLayer = 0;
+        if (keysOfKeyboard[i].layer == currentLayer) {
+          keysOfKeyboard[i].show(startMenuVisibility);
+        }
+        if (key != CODED) currentLayer = 1; 
+        else if (keyCode == SHIFT && keyPressed) currentLayer = 2; 
+        else currentLayer = 1;
+        if (keysOfKeyboard[i].layer == currentLayer) {
+          keysOfKeyboard[i].show(startMenuVisibility);
+        }
+        if (keysOfKeyboard[i].layer == currentLayer) {
+          keysOfKeyboard[i].show(startMenuVisibility);
+        }
       }
     }
   }
@@ -200,7 +217,10 @@ void exercise() {
       exerciseActive = false;
       exerciseActivable = false;
 
-      textToWrite.text += "\n[EXERCISE IS OVER, GOOD JOB!]";
+      String[] ses = loadStrings(currentUser.text.substring(6) + ".txt");
+      ses = append(ses, "Date " + day() + "/" + month() + "/" + year() + "  Hour " + hour() + ":" + minute() + ":" + second() + " " + textToWrite.text);
+      saveStrings(currentUser.text.substring(6) + ".txt", ses);
+      textToWrite.text += " \n[EXERCISE IS OVER, GOOD JOB!]";
       textToWrite.staticShow(300);
 
       unwrittenText = sentences[int(random(0, sentences.length - 1))];
@@ -251,7 +271,7 @@ void indicators() {
   charactersToWriteBox.text = "CHARACTERS TO WRITE: " + charactersToWrite;
   time.text = "TIME: " + second; 
 
-  textToWrite.text = beatsPerMinute.text + "\n" + writtenCharactersBox.text + "\n" + time.text + "\n" + percentageOfCorrectText.text;
+  textToWrite.text = beatsPerMinute.text + " \n" + writtenCharactersBox.text + " \n" + time.text + " \n" + percentageOfCorrectText.text;
 
   beatsPerMinute.staticShow(startMenuVisibility);
   charactersToWriteBox.staticShow(startMenuVisibility);
@@ -303,6 +323,7 @@ void resetText() {
   writtenText = "";
   correctText = "";
   wrongText = "";
+  beats = 0;
 }
 
 void changeMenuVisibility() { // Function switching from a menu to another

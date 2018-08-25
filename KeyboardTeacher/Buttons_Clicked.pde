@@ -56,6 +56,7 @@ void addUserButtonClicked() {
       userNameWritable = false;
     }
     userName = "";
+    userNameBox.text = userName;
     delay(100);
   }
 }

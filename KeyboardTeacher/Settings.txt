@@ -1,2 +1,2 @@
-normal
+easy
 standard
