@@ -45,11 +45,12 @@ void backToMenuButtonClicked() {
     backMenuOpened = false;
     startMenuOpened = false;
     progressMenuOpened = false;
+    userNameWritable = false;
   }
 }
 
 void addUserButtonClicked() {
-  if (addUser.selfClicked(progressMenuOpened)) {
+  if (addUser.selfClicked(progressMenuOpened && everySingleUser.length < 11)) {
     if (!userNameWritable) {
       userNameWritable = true;
     } else if (userNameWritable) {

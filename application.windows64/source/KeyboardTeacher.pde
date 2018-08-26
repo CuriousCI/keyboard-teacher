@@ -14,37 +14,70 @@ Box percentageOfCorrectText;
 Box currentMode;
 Box currentUser;
 
+Box userNameBox;
+Box userData;
+
 Button start;
 Button settings;
 Button progress;
 
 Button close;
 Button backToMenu;
+Button restartExercise; 
 
 Button easyMode;
 Button normalMode;
 Button hardMode;
+Button selectText;
 
 Button addUser;
-Button selectUser;
+Button removeUser;
 
-Key[] keysOfKeyboard = new Key[117];
+Button[] everySingleUser;
+
+Key[] keysOfKeyboard;
 
 boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
-  easyModeActive = false, normalModeActive = false, hardModeActive = true, exerciseActive = false, exerciseActivable = true; 
-int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, transitionSpeed = 30, 
-  frame = 0, second = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
-String unwrittenText = "ciao questo e un testo a caso provalo", wrongText = "", correctText = "", writtenText = "";
+  easyModeActive = false, normalModeActive = false, hardModeActive = false, exerciseActive = false, exerciseActivable = true, 
+  userNameWritable = false; 
+int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, 
+  restartExerciseButtonVisibility = 0, userNameBoxVisibility = 0, transitionSpeed = 30, 
+  frame = 0, second = 0, minute = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
+String unwrittenText, wrongText, correctText, writtenText, userName = "";
+String[] keys, sentences, users, setting, currentUserData;
 char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
 
-
 void setup() {
-  fullScreen (); //size(displayWidth, displayHeight); frame.setLocation(0, 0);
+  fullScreen (); //size(1000, 700); //frame.setLocation(0, 0);
+  background(#ADF6FF);
   rectMode(CENTER);
   textFont = loadFont("AgencyFB-Bold-48.vlw");
   textAlign(CENTER, CENTER);
 
-  String[] keys = loadStrings("Keys.txt");
+  keys = loadStrings("Keys.txt");
+  sentences = loadStrings("Sentences.txt");
+  users = loadStrings("Users.txt");
+  setting = loadStrings("Settings.txt");
+
+  keysOfKeyboard = new Key[keys.length];
+  everySingleUser = new Button[users.length];
+  for (int i = 0; i < everySingleUser.length; i++) {
+    everySingleUser[i] = new Button(50 + (250 / 2), 50 + 50 + 10 + 25 + i * 60, 250, 50, users[i]);
+    everySingleUser[i].edgeRoundness = 7;
+  }
+  currentUserData = loadStrings(setting[1] + ".txt");
+
+  switch(setting[0]) {
+    case ("easy"): 
+    easyModeActive = true; 
+    break;
+    case ("normal"): 
+    normalModeActive = true; 
+    break;
+    case ("hard"): 
+    hardModeActive = true; 
+    break;
+  }
 
   keyboard = new Box(width / 2, (3 * 60 + 400), 925, (5 * 60 + 25), "");
   textToWrite = new Box(width / 2, (275 / 2 + 25), 925, 275, "[press a key to start]");
@@ -59,43 +92,43 @@ void setup() {
   percentageOfCorrectText = new Box(width / 2 + 306, height - 387, 300, 40, "CORRECT TEXT:");
 
   currentMode = new Box(width / 2, height / 2 + 164, 250, 50, "");
-  currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "");
-  currentUser.text = "current user: standard";
+  currentMode.setColors(#0021F0, #0021F0, #F021FF);
+  currentUser = new Box(width / 2, height / 2 + 218, 250, 50, "user: " + setting[1]);
+  currentUser.setColors(#0021F0, #0021F0, #F021FF);
+
+  userNameBox = new Box(width / 2, height / 2, 400, 80, "");
+  userNameBox.textSize = 30;
+  userNameBox.setColors(#0021F0, #0021F0, #F021FF);
+  userData = new Box(width - 50 - 100 - 10 - (width - 50 - 100 - 10 - 50 - 250 - 10) / 2, 50 + 50 + 10 + (height - 50 - 50 - 10 - 50) / 2, width - 50 - 100 - 10 - 50 - 250 - 10, height - 50 - 50 - 10 - 50, currentUserData[0]);
+  userData.setColors(#0021F0, #0021F0, #F021FF);
 
   start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
   settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
   progress = new Button(width / 2, height / 2 + 82, 250, 75, "Progress"); 
 
-  close = new Button(width - 100, 50, 100, 50, "close"); 
-  backToMenu = new Button(width - 100, 110, 100, 50, "menu");
+  close = new Button(width - 100, 75, 100, 50, "close"); 
+  backToMenu = new Button(width - 100, 50 + close.selfHeight + 10 + 25, 100, 50, "menu");
+  restartExercise = new Button(width - 100, 50 + close.selfHeight + 10 + backToMenu.selfHeight + 10 + 25, 100, 50, "restart");
 
-  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "EasyMode"); 
-  normalMode = new Button(width / 2, height / 2, 250, 75, "NormalMode"); 
-  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "HardMode"); 
+  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "Easy Mode"); 
+  normalMode = new Button(width / 2, height / 2, 250, 75, "Normal Mode"); 
+  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "Hard Mode"); 
+  selectText = new Button(width / 2, height / 2 + 82 + 82, 250, 75, "Select Text");
 
-  addUser = new Button(165, 50, 220, 50, "Add User");
+  addUser = new Button(175, 50 + 25, 250, 50, "Add User");
   addUser.edgeRoundness = 7;
-  selectUser = new Button(395, 50, 220, 50, "Select User");
-  selectUser.edgeRoundness = 7;
+  removeUser = new Button(175 + addUser.selfWidth / 2 + 10 + 125, 50 + 25, 250, 50, "Remove User");
+  removeUser.edgeRoundness = 7;
 
-  for (int index = 0; index < 117; index++) {
-    int spaceOne = keys[index].indexOf(" ");
-    int spaceTwo = keys[index].indexOf(" ", spaceOne + 1);
-    int keyX = int ( float(keys[index].substring(spaceOne + 1, spaceTwo)) * 60 + (width - 60 * 16) / 2 ), 
-      keyY = int ( float(keys[index].substring(spaceTwo + 1, keys[index].length() - 1)) * 60 + 400 );
-    String keyText = keys[index].substring(0, spaceOne); 
-
-    int keyTextASCII = 0;
-    if (keyText.length() == 1) {
-      keyTextASCII = int(keyText.charAt(0));
-    } else {
-      keyTextASCII = 0;
-    }
-    if (keyTextASCII >= int('0') && keyTextASCII <= int('9') || (keyTextASCII >= int('a') && keyTextASCII <= int('z')) && keyText.length() == 1) {
-      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, keyText);
-    } else {
-      keysOfKeyboard[index] = new Key(keyX, keyY, 50, 50, "");
-    }
+  for (int index = 0; index < keysOfKeyboard.length; index++) {
+    String[] components = split(keys[index], " ");
+    float keyX = float (components[1]), 
+      keyY = float (components[2]), 
+      keyWidth = float (components[3]), 
+      keyHeight = float (components[4]), 
+      keyLayer = float (components[6]);
+    String keyText = components[0], keyFinger = components[5]; 
+    keysOfKeyboard[index] = new Key(int(keyX * 2 * 30 + 200), int(keyY * (keyHeight + 10) + 400), int(keyWidth), int(keyHeight), keyText, keyFinger, int(keyLayer));
   }
 }
 
@@ -107,14 +140,11 @@ void draw() {
 
   changeMenuVisibility();
 
-  if (mainMenuOpened) mainMenu();
-  if (startMenuOpened) startMenu();
-  if (settingsMenuOpened) settingsMenu();
-  if (progressMenuOpened) progressMenu();
-  currentData();
-  backMenu();
+  if (mainMenuOpened && backMenuVisibility == 0) mainMenu();
+  if (startMenuOpened && mainMenuVisibility == 0) startMenu();
+  if (settingsMenuOpened && mainMenuVisibility == 0) settingsMenu();
+  if (progressMenuOpened && mainMenuVisibility == 0) progressMenu();
 
-  fill(0);
-  text(mouseX, mouseX + 100, mouseY + 150);
-  text(mouseY, mouseX + 100, mouseY + 100);
+  if (!startMenuOpened) currentData();
+  if (!mainMenuOpened) backMenu();
 }

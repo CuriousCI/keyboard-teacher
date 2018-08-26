@@ -44,7 +44,7 @@ int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0,
   restartExerciseButtonVisibility = 0, userNameBoxVisibility = 0, transitionSpeed = 30, 
   frame = 0, second = 0, minute = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
 String unwrittenText, wrongText, correctText, writtenText, userName = "";
-String[] keys, sentences, users, setting;
+String[] keys, sentences, users, setting, currentUserData;
 char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
 
 void setup() {
@@ -62,9 +62,10 @@ void setup() {
   keysOfKeyboard = new Key[keys.length];
   everySingleUser = new Button[users.length];
   for (int i = 0; i < everySingleUser.length; i++) {
-    everySingleUser[i] = new Button(165, 150 + i * 60, 250, 50, users[i]);
+    everySingleUser[i] = new Button(50 + (250 / 2), 50 + 50 + 10 + 25 + i * 60, 250, 50, users[i]);
     everySingleUser[i].edgeRoundness = 7;
   }
+  currentUserData = loadStrings(setting[1] + ".txt");
 
   switch(setting[0]) {
     case ("easy"): 
@@ -98,7 +99,8 @@ void setup() {
   userNameBox = new Box(width / 2, height / 2, 400, 80, "");
   userNameBox.textSize = 30;
   userNameBox.setColors(#0021F0, #0021F0, #F021FF);
-  userData = new Box(165 + 250, 150 + 250, 500, 500, "");
+  userData = new Box(width - 50 - 100 - 10 - (width - 50 - 100 - 10 - 50 - 250 - 10) / 2, 50 + 50 + 10 + (height - 50 - 50 - 10 - 50) / 2, width - 50 - 100 - 10 - 50 - 250 - 10, height - 50 - 50 - 10 - 50, currentUserData[0]);
+  userData.setColors(#0021F0, #0021F0, #F021FF);
 
   start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
   settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
@@ -113,9 +115,9 @@ void setup() {
   hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "Hard Mode"); 
   selectText = new Button(width / 2, height / 2 + 82 + 82, 250, 75, "Select Text");
 
-  addUser = new Button(165, 75, 250, 50, "Add User");
+  addUser = new Button(175, 50 + 25, 250, 50, "Add User");
   addUser.edgeRoundness = 7;
-  removeUser = new Button(165 + addUser.selfWidth / 2 + 10 + 125, 75, 250, 50, "Remove User");
+  removeUser = new Button(175 + addUser.selfWidth / 2 + 10 + 125, 50 + 25, 250, 50, "Remove User");
   removeUser.edgeRoundness = 7;
 
   for (int index = 0; index < keysOfKeyboard.length; index++) {

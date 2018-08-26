@@ -19,33 +19,31 @@ class Key extends Box {
 
   void changeDynamicColors() {
     if (keyPressed) {
-      if (normalModeActive) {
-        if (text.length() == 1 && key == text.charAt(0) && key == unwrittenText.charAt(writtenText.length())) {
-          setColors(255, 255, 255);
-        }
+      if (text.length() == 1 && key == text.charAt(0) && key == unwrittenText.charAt(writtenText.length())) {
+        setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
+      } else if (text.length() == 1 && key == text.charAt(0)) {
+        setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
+      } else if (normalModeActive) {
+        setColors(100, #D0D0D0, 90);
       } else if (easyModeActive) {
-        if (text.length() == 1 && key == text.charAt(0) && key == unwrittenText.charAt(writtenText.length())) {
-          setColors(color(0, 255, 0), color(0, 255, 0), color(0, 255, 0));
-        } else if (text.length() == 1 && key == text.charAt(0)) {
-          setColors(color(255, 0, 0), color(255, 0, 0), color(255, 0, 0));
-        } else {
-          switch (finger) {
-          case "thumb": 
-            setColors(100, #D0D0D0, 90);
-          case "pinky": 
-            setColors(color(255, 0, 255), color(255, 0, 255, 100), color(255, 255, 255)); 
-            break;
-          case "ring": 
-            setColors(color(0, 0, 255), color(0, 0, 255, 100), color(255, 255, 255)); 
-            break;
-          case "middle": 
-            setColors(color(200, 200, 255), color(200, 200, 255, 100), color(255, 255, 255)); 
-            break;
-          case "index": 
-            setColors(color(200, 200, 50), color(200, 200, 50, 100), color(255, 255, 255)); 
-            break;
-          }
+        switch (finger) {
+        case "thumb": 
+          setColors(100, #D0D0D0, 90);
+        case "pinky": 
+          setColors(color(255, 0, 255), color(255, 0, 255, 100), color(255, 255, 255)); 
+          break;
+        case "ring": 
+          setColors(color(0, 0, 255), color(0, 0, 255, 100), color(255, 255, 255)); 
+          break;
+        case "middle": 
+          setColors(color(200, 200, 255), color(200, 200, 255, 100), color(255, 255, 255)); 
+          break;
+        case "index": 
+          setColors(color(200, 200, 50), color(200, 200, 50, 100), color(255, 255, 255)); 
+          break;
         }
+      } else {
+        setColors(100, #D0D0D0, 90);
       }
     } else {
       if (easyModeActive) {

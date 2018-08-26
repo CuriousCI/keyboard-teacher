@@ -87,7 +87,6 @@ void progressMenu() {
           everySingleUser[i] = new Button(165, 150 + i * 60, 250, 50, users[i]);
           everySingleUser[i].edgeRoundness = 7;
         }
-
         userNameWritable = false;
         userName = "";
         userNameBox.text = userName;
@@ -99,16 +98,19 @@ void progressMenu() {
       }
       userNameBox.text = userName;
       keyPressed = false;
-      //delay(75);
     }
   }
-  userNameBox.staticShow(userNameBoxVisibility);
+  if (userNameBoxVisibility != 0) userNameBox.staticShow(userNameBoxVisibility); 
+  else userData.staticShow(progressMenuVisibility);
+
 
   for (int i = 0; i < everySingleUser.length; i++) {
     if (everySingleUser[i].selfClicked(progressMenuOpened)) {
       currentUser.text = "user: " + everySingleUser[i].text;
       setting[1] = everySingleUser[i].text;
       saveStrings("Settings.txt", setting);
+      currentUserData = loadStrings(everySingleUser[i].text + ".txt");
+      userData.text = currentUserData[0];
       delay(100);
     }
   }
@@ -146,7 +148,7 @@ void backMenu() {
 void keyboard() {
   if (startMenuOpened && startMenuVisibility >= 150) {
     for (int i = 0; i < keysOfKeyboard.length; i++) {
-      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length()) && keysOfKeyboard[i].text.length() == 1 /*&& keyPressed == false*/ && exerciseActive) {
+      if (keysOfKeyboard[i].text.charAt(0) == unwrittenText.charAt(writtenText.length()) && keysOfKeyboard[i].text.length() == 1 && (keyPressed == false || key == CODED) && exerciseActive) {
         keysOfKeyboard[i].setColors(0, 0, 255);
         keysOfKeyboard[i].staticShow(startMenuVisibility);
       } else {
