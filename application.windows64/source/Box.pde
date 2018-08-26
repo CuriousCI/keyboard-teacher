@@ -49,7 +49,6 @@ class Box {
     fill(selfColor[1], transparency);
     rect (x, y, selfWidth, selfHeight, edgeRoundness);
 
-
     fill(selfColor[2], transparency);
     textFont (textFont);
     textSize(textSize);
