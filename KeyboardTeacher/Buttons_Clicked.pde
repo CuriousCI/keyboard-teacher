@@ -1,17 +1,14 @@
 void closeButtonClicked() {
-  if (close.selfClicked(true)) {
-    exit();
-  }
+  if (close.selfClicked()) exit();
 }
 
 void startButtonClicked() {
-  if (start.selfClicked(mainMenuOpened)) {
+  if (start.selfClicked() && mainMenuOpened) {
     mainMenuOpened = false;
     settingsMenuOpened = false;
     backMenuOpened = true;
     startMenuOpened = true;
     progressMenuOpened = false;
-
     resetText();
     exerciseActivable = true;
     exerciseActive = false;
@@ -19,7 +16,7 @@ void startButtonClicked() {
 }
 
 void settingsButtonClicked() {
-  if (settings.selfClicked(mainMenuOpened)) {
+  if (settings.selfClicked() && mainMenuOpened) {
     mainMenuOpened = false;
     settingsMenuOpened = true;
     backMenuOpened = true;
@@ -29,7 +26,7 @@ void settingsButtonClicked() {
 }
 
 void progressButtonClicked() {
-  if (progress.selfClicked(mainMenuOpened)) {
+  if (progress.selfClicked() && mainMenuOpened) {
     mainMenuOpened = false;
     settingsMenuOpened = false;
     backMenuOpened = true;
@@ -39,7 +36,7 @@ void progressButtonClicked() {
 }
 
 void backToMenuButtonClicked() {
-  if (backToMenu.selfClicked(!mainMenuOpened)) {
+  if (backToMenu.selfClicked() && !mainMenuOpened) {
     mainMenuOpened = true;
     settingsMenuOpened = false;
     backMenuOpened = false;
@@ -50,11 +47,13 @@ void backToMenuButtonClicked() {
 }
 
 void addUserButtonClicked() {
-  if (addUser.selfClicked(progressMenuOpened && everySingleUser.length < 11)) {
-    if (!userNameWritable) {
+  if (addUser.selfClicked() && progressMenuOpened && everySingleUser.length < 11) {
+    if (!userNameWritable) { 
       userNameWritable = true;
-    } else if (userNameWritable) {
+      addUser.text = "close";
+    } else if (userNameWritable) { 
       userNameWritable = false;
+      addUser.text = "Add User";
     }
     userName = "";
     userNameBox.text = userName;
@@ -62,47 +61,58 @@ void addUserButtonClicked() {
   }
 }
 
+void removeUserButtonClicked() {
+  if (removeUser.selfClicked()) {
+    if (!userRemovable) { 
+      userRemovable = true;
+      removeUser.text = "close";
+    } else if (userRemovable) { 
+      userRemovable = false;
+      removeUser.text = "remove user";
+    }
+    delay(100);
+  }
+}
+
 void restartExerciseButtonClicked() {
-  if (restartExercise.selfClicked(exerciseActive || (!exerciseActive && !exerciseActivable))) {
+  if (restartExercise.selfClicked() && (exerciseActive || (!exerciseActive && !exerciseActivable))) {
     exerciseActivable = true;
     exerciseActive = false;
-
     frame = 0;
     second = 0;
-
     resetText();
   }
 }
 
 void easyModeButtonClicked() {
-  if (easyMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
-    //delay(100);
+  if (easyMode.selfClicked() && settingsMenuVisibility == 300) {
     easyModeActive = true;
     normalModeActive = false;
     hardModeActive = false;
     setting[0] = "easy";
+    currentMode.text = "mode: " + setting[0];
     saveStrings("Settings.txt", setting);
   }
 }
 
 void normalModeButtonClicked() {
-  if (normalMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
-    //delay(100);
+  if (normalMode.selfClicked() && settingsMenuVisibility == 300) {
     easyModeActive = false;
     normalModeActive = true;
     hardModeActive = false;
     setting[0] = "normal";
+    currentMode.text = "mode: " + setting[0];
     saveStrings("Settings.txt", setting);
   }
 }
 
 void hardModeButtonClicked() {
-  if (hardMode.selfClicked(settingsMenuOpened && settingsMenuVisibility == 300)) {
-    //delay(100);
+  if (hardMode.selfClicked() && settingsMenuVisibility == 300) {
     easyModeActive = false;
     normalModeActive = false;
     hardModeActive = true;
     setting[0] = "hard";
+    currentMode.text = "mode: " + setting[0];
     saveStrings("Settings.txt", setting);
   }
 }

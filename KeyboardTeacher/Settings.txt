@@ -1,2 +1,2 @@
-easy
-standard
+﻿hard
+﻿standard

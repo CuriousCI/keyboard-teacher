@@ -1,6 +1,6 @@
 class Box {
-
   int x, y, selfWidth, selfHeight, edgeRoundness, textSize, transparency;
+  float strokeWheight;
   String text;
   color[] selfColor = new color[3];
 
@@ -9,16 +9,23 @@ class Box {
     this.y = y;
     selfWidth = w;
     selfHeight = h;
-
-    setColors(50, #E3E3E3, 20);
-
+    setColors(255, 0, 255);
     this.text = text;
-    if (text.length() == 0) {
-      textSize = 1;
-    } else {
-      textSize = selfWidth / text.length();
-    }
-    edgeRoundness = 10;
+    textSize = 30;
+    strokeWheight = 2.5;
+    edgeRoundness = 5;
+  }
+
+  Box(int x, int y, int w, int h, String text, int textSize, float strokeWheight) {
+    this.x = x;
+    this.y = y;
+    selfWidth = w;
+    selfHeight = h;
+    setColors(255, 0, 255);
+    this.text = text;
+    this.textSize = textSize;
+    this.strokeWheight = strokeWheight;
+    edgeRoundness = 5;
   }
 
   void setCoordinates(int x, int y) {
@@ -44,11 +51,10 @@ class Box {
 
   void staticShow(int transparency) {
     this.transparency = transparency;
-    strokeWeight(2.5);
+    strokeWeight(strokeWheight);
     stroke(selfColor[0], transparency);
     fill(selfColor[1], transparency);
     rect (x, y, selfWidth, selfHeight, edgeRoundness);
-
     fill(selfColor[2], transparency);
     textFont (textFont);
     textSize(textSize);
