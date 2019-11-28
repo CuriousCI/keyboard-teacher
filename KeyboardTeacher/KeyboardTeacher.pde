@@ -1,130 +1,147 @@
-PFont textFont; //<>//
+HashMap<Integer, Boolean> pressedKeys; //<>//
 
-Box keyboard;
-Box textToWrite;
-Box indicatorsBar;
+void keyPressed() {
+  pressedKeys.put(keyCode, true);
+}
 
-Box beatsPerMinute;
-Box charactersToWriteBox;
-Box writtenCharactersBox;
-Box time;
-Box percentageOfCompletion;
-Box percentageOfCorrectText;
+void keyReleased() {
+  pressedKeys.put(keyCode, false);
+}
 
-Box currentMode;
-Box currentUser;
+boolean isPressed(int key) {
+  if (pressedKeys.containsKey(key)) {
+    return pressedKeys.get(key);
+  }
+  return false;
+}
 
-Box userNameBox;
-Box userData;
+Panel mainMenu, settingsMenu, progressMenu, exercise, keyboard, stats;
+Label mode, user;
+Label writtenCharacters, unwrittenCharacters, beats, time, completionPercentage, correctnessPercentage;
+TextArea sentence;
+Button start, settings, progress;
+Button home;
 
-Button start;
-Button settings;
-Button progress;
-
-Button close;
-Button backToMenu;
-Button restartExercise; 
-
-Button easyMode;
-Button normalMode;
-Button hardMode;
-Button selectText;
-
-Button addUser;
-Button removeUser;
-
-Button[] everySingleUser;
-
-Key[] keysOfKeyboard;
-
-boolean mainMenuOpened = true, settingsMenuOpened = false, startMenuOpened = false, progressMenuOpened = false, backMenuOpened = false, 
-  easyModeActive = false, normalModeActive = false, hardModeActive = false, exerciseActive = false, exerciseActivable = true, 
-  userNameWritable = false, writable = true, userRemovable = false; 
-int mainMenuVisibility = 0, startMenuVisibility = 0, settingsMenuVisibility = 0, progressMenuVisibility = 0, backMenuVisibility = 0, 
-  restartExerciseButtonVisibility = 0, userNameBoxVisibility = 0, transitionSpeed = 30, 
-  frame = 0, second = 0, minute = 0, beats = 0, MAX_ROWS = 20, MAX_COLUMNS = 87;
-String unwrittenText, wrongText, correctText, writtenText, userName = "";
-String[] keys, sentences, users, setting, currentUserData;
-char[][] matrix = new char[MAX_ROWS][MAX_COLUMNS];
-char lastKey = ' ';
+void settings() {
+  size(1280, 800);
+  //fullScreen();
+}
 
 void setup() {
-  //fullScreen (); //size(1000, 700); //frame.setLocation(0, 0);
-  size(1000, 700);
-  background(20);
-  rectMode(CENTER);
-  textFont = loadFont("AgencyFB-Bold-48.vlw");
+  frameRate(1000);
+  PFont font = loadFont("Monospaced.plain-48.vlw");
+  textFont(font);
+  textAlign(LEFT, CENTER);
 
-  keys = loadStrings("Keys.txt");
-  sentences = loadStrings("Sentences.txt");
-  users = loadStrings("Users.txt");
-  setting = loadStrings("Settings.txt");
-  currentUserData = loadStrings(setting[1] + ".txt");
-  everySingleUser = new Button[users.length];
-  for (int i = 0; i < everySingleUser.length; i++) everySingleUser[i] = new Button(175, 135 + i * 60, 250, 50, users[i]);
-  keysOfKeyboard = new Key[keys.length];
-  for (int index = 0; index < keysOfKeyboard.length; index++) {
-    String[] data = split(keys[index], " ");
-    keysOfKeyboard[index] = new Key(int(data[1]) + width / 2 - 422, int(data[2]) + (height - 332), int(data[3]), int(data[4]), data[0], data[5], int(data[6]));
+  JSONArray keysFile = loadJSONArray("data/keys.json");
+  ArrayList<Key> keys = new ArrayList<Key>();
+
+  for (int index = 0; index < keysFile.size(); index++) {
+    JSONObject _key = keysFile.getJSONObject(index); 
+    keys.add(new Key(_key.getString("value"), _key.getFloat("x"), _key.getFloat("y"), _key.getFloat("width"), _key.getFloat("height"), _key.getString("finger"), _key.getString("finger")));
   }
 
-  switch(setting[0]) {
-    case ("easy"): 
-    easyModeActive = true; 
-    break;
-    case ("normal"): 
-    normalModeActive = true; 
-    break;
-    case ("hard"): 
-    hardModeActive = true; 
-    break;
+  pressedKeys = new HashMap<Integer, Boolean>();
+
+
+  home = new Button("HOME", width*0.89, height*0.02, width*0.10, height*0.05);
+
+  start = new Button("Start", width*0.375, height*0.34, width*0.25, height*0.10); 
+  settings = new Button("Settings", width*0.375, height*0.45, width*0.25, height*0.10); 
+  progress = new Button("Progress", width*0.375, height*0.56, width*0.25, height*0.10); 
+
+  JSONObject settingsFile = loadJSONObject("data/settings.json");
+  mode = new Label("mode: " + settingsFile.getString("mode"), width*0.22, height*0.02, width*0.20, height*0.07);
+  user = new Label("user: " + settingsFile.getString("user"), width*0.01, height*0.02, width*0.20, height*0.07);
+
+  mainMenu = new Panel(0, 0, width, height);
+  mainMenu.add(start);
+  mainMenu.add(settings);
+  mainMenu.add(progress);
+  mainMenu.add(mode);
+  mainMenu.add(user);
+
+  settingsMenu = new Panel(0, 0, width, height);
+  settingsMenu.setVisible(false);
+  settingsMenu.add(home);
+  settingsMenu.add(mode);
+  settingsMenu.add(user);
+
+  progressMenu = new Panel(0, 0, width, height);
+  progressMenu.setVisible(false);
+  progressMenu.add(home);
+  progressMenu.add(user);
+
+  sentence = new TextArea("Helsjkakdshajhdjksahjkhdjkhasjkhdjkshajkhdjksahjkdhjksahjkdhsajkhdjkhlo", width*0.05, height*0.11, width*0.90, height*0.30);
+
+  writtenCharacters = new Label("hello", width*0.015, height*0.015, width*0.27, height*0.04); 
+  unwrittenCharacters = new Label("hello", width*0.015, height*0.065, width*0.27, height*0.04);
+  beats = new Label("hello", width*0.315, height*0.015, width*0.27, height*0.04);
+  time = new Label("hello", width*0.315, height*0.065, width*0.27, height*0.04);
+  completionPercentage = new Label("hello", width*0.615, height*0.015, width*0.27, height*0.04);
+  correctnessPercentage = new Label("hello", width*0.615, height*0.065, width*0.27, height*0.04);
+
+  stats = new Panel(width*0.05, height*0.42, width*0.90, height*0.12);
+  stats.add(writtenCharacters); 
+  stats.add(unwrittenCharacters);
+  stats.add(beats);
+  stats.add(time);
+  stats.add(completionPercentage);
+  stats.add(correctnessPercentage);
+
+  keyboard = new Panel(width*0.05, height*0.55, width*0.90, height*0.40);
+  for (Key _key : keys) {
+    _key.setX(_key.getX() * 60);
+    _key.setY(_key.getY() * 60);
+    _key.setWidth(_key.getWidth() * 25);
+    _key.setHeight(_key.getHeight() * 25);
+    _key.autoFill();
+    keyboard.add(_key);
   }
 
-  textToWrite = new Box(width / 2, 50 + (height - 544) / 2, 924, height - 545, "[press a key to start]");
-  indicatorsBar = new Box(width / 2, height - 435, 925, 100, "");
-  keyboard = new Box(width / 2, height - 212, 925, 325, "");
-
-  beatsPerMinute = new Box(width / 2 - 306, height - 457, 295, 35, "BEATS/MINUTE: ", 20, 1.5);
-  time = new Box(width / 2, height - 457, 295, 35, "TIME: ", 20, 1.5); 
-  percentageOfCompletion = new Box(width / 2 + 306, height - 457, 295, 35, "COMPLETION: ", 20, 1.5);
-  charactersToWriteBox = new Box(width / 2 - 306, height - 413, 295, 35, "CHARACTERS TO WRITE: ", 20, 1.5);
-  writtenCharactersBox = new Box(width / 2, height - 413, 295, 35, "WRITTEN CHARACTERS: ", 20, 1.5);
-  percentageOfCorrectText = new Box(width / 2 + 306, height - 413, 295, 35, "CORRECT TEXT:", 20, 1.5);
-
-  currentMode = new Box(width - 285, 75, 250, 50, "mode: " + setting[0]);
-  currentUser = new Box(width - 545, 75, 250, 50, "user: " + setting[1]);
-
-  userNameBox = new Box(width - 160 - (width - 470) / 2, 110 + (height - 160) / 2, 400, 80, "");
-  userData = new Box(width - 160 - (width - 470) / 2, 110 + (height - 160) / 2, width - 470, height - 160, currentUserData[0]);
-
-  start = new Button(width / 2, height / 2 - 82, 250, 75, "Start"); 
-  settings = new Button(width / 2, height / 2, 250, 75, "Settings"); 
-  progress = new Button(width / 2, height / 2 + 82, 250, 75, "Progress"); 
-
-  close = new Button(width - 100, 75, 100, 50, "close"); 
-  backToMenu = new Button(width - 100, 135, 100, 50, "menu");
-  restartExercise = new Button(width - 100, 195, 100, 50, "restart");
-
-  easyMode = new Button(width / 2, height / 2 - 82, 250, 75, "Easy Mode"); 
-  normalMode = new Button(width / 2, height / 2, 250, 75, "Normal Mode"); 
-  hardMode = new Button(width / 2, height / 2 + 82, 250, 75, "Hard Mode"); 
-  selectText = new Button(width / 2, height / 2 + 164, 250, 75, "Select Text");
-
-  addUser = new Button(175, 50 + 25, 250, 50, "Add User");
-  removeUser = new Button(175 + addUser.selfWidth / 2 + 10 + 125, 50 + 25, 250, 50, "Remove User");
+  exercise = new Panel(0, 0, width, height);
+  exercise.setVisible(false);
+  exercise.add(home);
+  exercise.add(stats);
+  exercise.add(sentence);
+  exercise.add(keyboard);
 }
 
 void draw() {
-  background(20);
-  changeMenuVisibility();
-  if (mainMenuOpened && backMenuVisibility == 0) mainMenu();
-  if (startMenuOpened && mainMenuVisibility == 0) startMenu();
-  if (settingsMenuOpened && mainMenuVisibility == 0) settingsMenu();
-  if (progressMenuOpened && mainMenuVisibility == 0) progressMenu();
-  if (!mainMenuOpened) {
-    backToMenu.show(backMenuVisibility);
-    backToMenuButtonClicked();
+  background(200);
+  noStroke();
+
+  execute();
+  fill(0, 0, 0, 125);
+  mainMenu.display();
+  exercise.display();
+  settingsMenu.display();
+  progressMenu.display();
+
+//  fill(255, 0, 0);
+//  text(frameRate, mouseX, mouseY);
+}
+
+void execute() {
+  if (start.isClicked()) {
+    mainMenu.setVisible(false);
+    exercise.setVisible(true);
+  } 
+
+  if (settings.isClicked()) {
+    mainMenu.setVisible(false);
+    settingsMenu.setVisible(true);
   }
-  close.show(300);
-  closeButtonClicked();
+
+  if (progress.isClicked()) {
+    mainMenu.setVisible(false);
+    progressMenu.setVisible(true);
+  }
+
+  if (home.isClicked()) {
+    mainMenu.setVisible(true);
+    exercise.setVisible(false);
+    settingsMenu.setVisible(false);
+    progressMenu.setVisible(false);
+  }
 }

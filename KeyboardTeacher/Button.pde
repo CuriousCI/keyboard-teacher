@@ -1,28 +1,41 @@
-class Button extends Box {
-  Button(int x, int y, int w, int h, String text) {
-    super(x, y, w, h, text);
-    textAlign(CENTER, CENTER);
+class Button extends Label {
+  public Button() {
+    super();
   }
 
-  void show(int transparency) {
-    changeDynamicColors();
-    staticShow(transparency);
+  public Button(String text, float x, float y, float _width, float _height) {
+    super(text, x, y, _width, _height);
   }
 
-  void changeDynamicColors() {
-    if (mouseInside()) 
-      if (selfClicked()) setColors(255, 255, 0);
-      else setColors(20, 255, 0);
-    else setColors(255, 0, 255);
+  public boolean hasMouseInside() {
+    return
+      mouseX > this.getX() &&
+      mouseX < this.getX() + this.getWidth() &&
+      mouseY > this.getY() && 
+      mouseY < this.getY() + this.getHeight();
   }
 
-  boolean mouseInside() {
-    if ((mouseX < x + selfWidth / 2 && mouseX > x - selfWidth / 2) && (mouseY < y + selfHeight / 2 && mouseY > y - selfHeight / 2)) return true;
-    else return false;
+  public boolean isClicked() {
+    return this.hasMouseInside() && mousePressed && this.isVisible();
   }
 
-  boolean selfClicked() {
-    if (mouseInside() && mousePressed) return true;
-    else return false;
+  @Override
+    protected void displayBackground() {
+    fill(#FFFFFF);
+    stroke(#AA0000);
+    strokeWeight(0.5);
+    rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+    fill(#AA0000);
+    rect(this.getX(), this.getY() + this.getHeight() - 1, this.getWidth(), 1);
+  }
+
+  @Override
+    public void displayObject() {
+    super.displayObject();
+    if (this.hasMouseInside()) {
+      fill(#EEDDDD, 100);
+      strokeWeight(1);
+      rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+    }
   }
 }

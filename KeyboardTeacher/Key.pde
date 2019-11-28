@@ -1,39 +1,23 @@
-class Key extends Box {
-  String finger;
-  int layer;
+public class Key extends Label {
+  private Finger finger = Finger.INDEX;
+  private Hand hand = Hand.RIGHT;
 
-  Key(int x, int y, int w, int h, String text, String finger, int layer) {
-    super(x, y, w, h, text);
-    if (textSize != 1) textSize = selfWidth / text.length() / 2 + 10;
-    this.finger = finger;
-    this.layer = layer;
+  public Key() {
+    this("", 0, 0, 0, 0, "", "");
   }
 
-  void show(int transparency) {
-    changeDynamicColors();
-    staticShow(transparency);
+  public Key(String text, float x, float y, float _width, float _height, String finger, String hand) {
+    super(text, x, y, _width, _height);
   }
 
-  void changeDynamicColors() { // CHECK LATER
-    if (easyModeActive) {
-      switch (finger) {
-      case "thumb": 
-        setColors(100, #D0D0D0, 90);
-      case "pinky": 
-        setColors(color(255, 0, 255), color(255, 0, 255, 100), color(255, 255, 255)); 
-        break;
-      case "ring": 
-        setColors(color(0, 0, 255), color(0, 0, 255, 100), color(255, 255, 255)); 
-        break;
-      case "middle": 
-        setColors(color(200, 200, 255), color(200, 200, 255, 100), color(255, 255, 255)); 
-        break;
-      case "index": 
-        setColors(color(200, 200, 50), color(200, 200, 50, 100), color(255, 255, 255)); 
-        break;
-      }
+  @Override
+    protected void displayBackground() {
+    //super.displayObject();
+    if (isPressed(this.getText().charAt(0))) {
+      fill(255, 255, 00);
+      rect(this.getX() - 2, this.getY() - 2, this.getWidth() + 4, this.getHeight() + 4);
     } else {
-      setColors(255, 0, 255);
+      super.displayBackground();
     }
   }
 }
