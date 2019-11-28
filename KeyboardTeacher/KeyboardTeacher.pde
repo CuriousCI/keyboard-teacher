@@ -2,6 +2,10 @@ HashMap<Integer, Boolean> pressedKeys; //<>//
 
 void keyPressed() {
   pressedKeys.put(keyCode, true);
+
+  if (stats.isVisible()) {
+    stats.increaseBeats();
+  }
 }
 
 void keyReleased() {
@@ -15,12 +19,14 @@ boolean isPressed(int key) {
   return false;
 }
 
-Panel mainMenu, settingsMenu, progressMenu, exercise, keyboard, stats;
+Panel mainMenu, settingsMenu, progressMenu, exercise, keyboard/*, stats*/;
+StatsPanel stats;
 Label mode, user;
-Label writtenCharacters, unwrittenCharacters, beats, time, completionPercentage, correctnessPercentage;
 TextArea sentence;
 Button start, settings, progress;
 Button home;
+
+int frameCounter;
 
 void settings() {
   size(1280, 800);
@@ -28,7 +34,8 @@ void settings() {
 }
 
 void setup() {
-  frameRate(1000);
+  frameRate(60);
+  frameCounter = 0;
   PFont font = loadFont("Monospaced.plain-48.vlw");
   textFont(font);
   textAlign(LEFT, CENTER);
@@ -72,22 +79,9 @@ void setup() {
   progressMenu.add(home);
   progressMenu.add(user);
 
-  sentence = new TextArea("Helsjkakdshajhdjksahjkhdjkhasjkhdjkshajkhdjksahjkdhjksahjkdhsajkhdjkhlo", width*0.05, height*0.11, width*0.90, height*0.30);
+  sentence = new TextArea("Hello!", width*0.05, height*0.11, width*0.90, height*0.30);
 
-  writtenCharacters = new Label("hello", width*0.015, height*0.015, width*0.27, height*0.04); 
-  unwrittenCharacters = new Label("hello", width*0.015, height*0.065, width*0.27, height*0.04);
-  beats = new Label("hello", width*0.315, height*0.015, width*0.27, height*0.04);
-  time = new Label("hello", width*0.315, height*0.065, width*0.27, height*0.04);
-  completionPercentage = new Label("hello", width*0.615, height*0.015, width*0.27, height*0.04);
-  correctnessPercentage = new Label("hello", width*0.615, height*0.065, width*0.27, height*0.04);
-
-  stats = new Panel(width*0.05, height*0.42, width*0.90, height*0.12);
-  stats.add(writtenCharacters); 
-  stats.add(unwrittenCharacters);
-  stats.add(beats);
-  stats.add(time);
-  stats.add(completionPercentage);
-  stats.add(correctnessPercentage);
+  stats = new StatsPanel(width*0.05, height*0.42, width*0.90, height*0.12);
 
   keyboard = new Panel(width*0.05, height*0.55, width*0.90, height*0.40);
   for (Key _key : keys) {
@@ -112,19 +106,26 @@ void draw() {
   noStroke();
 
   execute();
-  fill(0, 0, 0, 125);
   mainMenu.display();
   exercise.display();
   settingsMenu.display();
   progressMenu.display();
 
-//  fill(255, 0, 0);
-//  text(frameRate, mouseX, mouseY);
+  //  fill(255, 0, 0);
+  //  text(frameRate, mouseX, mouseY);
 }
 
 void execute() {
+  frameCounter++;
+  
+  if (frameCounter % (int)(frameRate) == 0) {
+    frameCounter = 0;
+    stats.increaseTime();
+  }
+  
   if (start.isClicked()) {
     mainMenu.setVisible(false);
+    stats.resetUI();
     exercise.setVisible(true);
   } 
 
