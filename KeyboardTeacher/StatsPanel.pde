@@ -44,7 +44,7 @@ public class StatsPanel extends Panel {
   public void updateUI() {
     this.writtenCharacters.setText("");
     this.unwrittenCharacters.setText("");
-    this.beats.setText("beats: " + this.beatsCounter/this.timeCounter + "/s" );
+    this.beats.setText("beats: " + this.beatsCounter/(this.timeCounter + 1) + "/s" );
     this.time.setText("time: " + this.timeCounter);
     this.completionPercentage.setText("completion: " + this.completion + "%");
     this.correctnessPercentage.setText("corectness: " + this.corectness + "%");

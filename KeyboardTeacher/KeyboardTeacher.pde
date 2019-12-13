@@ -10,9 +10,11 @@ void keyPressed() {
 
 void keyReleased() {
   pressedKeys.put(keyCode, false);
-  currentText += char(keyCode);
+  if (keyCode > 32) {
+    sentence.inputText += char(key);
+  }
   try {
-    stats.setValues(currentText, sentence.getText());
+    stats.setValues(sentence.inputText, sentence.getText());
   } 
   catch (Exception e) {
     mainMenu.setVisible(true);
@@ -35,8 +37,6 @@ Label mode, user;
 TextArea sentence;
 Button start, settings, progress;
 Button home;
-
-String currentText;
 
 int frameCounter;
 
@@ -61,7 +61,6 @@ void setup() {
   }
 
   pressedKeys = new HashMap<Integer, Boolean>();
-  currentText = "";
 
 
   home = new Button("HOME", width*0.89, height*0.02, width*0.10, height*0.05);
@@ -141,7 +140,7 @@ void execute() {
     mainMenu.setVisible(false);
     stats.resetUI();
     exercise.setVisible(true);
-    currentText = "";
+    sentence.inputText = "";
   } 
 
   if (settings.isClicked()) {
