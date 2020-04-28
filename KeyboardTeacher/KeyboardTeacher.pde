@@ -1,4 +1,4 @@
-HashMap<Integer, Boolean> pressedKeys; //<>//
+HashMap<Integer, Boolean> pressedKeys;
 
 void keyPressed() {
   pressedKeys.put(keyCode, true);
@@ -31,12 +31,15 @@ boolean isPressed(int key) {
   return false;
 }
 
+Mode mode;
+
 Panel mainMenu, settingsMenu, progressMenu, exercise, keyboard/*, stats*/;
 StatsPanel stats;
-Label mode, user;
+Label selectedMode, selectedUser;
 TextArea sentence;
 Button start, settings, progress;
 Button home;
+ScrollMenu difficulty;
 
 int frameCounter;
 
@@ -70,28 +73,34 @@ void setup() {
   progress = new Button("Progress", width*0.375, height*0.56, width*0.25, height*0.10); 
 
   JSONObject settingsFile = loadJSONObject("data/settings.json");
-  mode = new Label("mode: " + settingsFile.getString("mode"), width*0.22, height*0.02, width*0.20, height*0.07);
-  user = new Label("user: " + settingsFile.getString("user"), width*0.01, height*0.02, width*0.20, height*0.07);
+  selectedMode = new Label("mode: " + settingsFile.getString("mode"), width*0.22, height*0.02, width*0.20, height*0.07);
+  selectedUser = new Label("user: " + settingsFile.getString("user"), width*0.01, height*0.02, width*0.20, height*0.07);
+  
+  difficulty = new ScrollMenu(width*0.375, height*0.45, width*0.25, height*0.10);
+  difficulty.add("easy");
+  difficulty.add("normal");
+  difficulty.add("hard");
 
   mainMenu = new Panel(0, 0, width, height);
   mainMenu.add(start);
   mainMenu.add(settings);
   mainMenu.add(progress);
-  mainMenu.add(mode);
-  mainMenu.add(user);
+  mainMenu.add(selectedMode);
+  mainMenu.add(selectedUser);
 
   settingsMenu = new Panel(0, 0, width, height);
-  settingsMenu.setVisible(false);
   settingsMenu.add(home);
-  settingsMenu.add(mode);
-  settingsMenu.add(user);
+  settingsMenu.add(selectedMode);
+  settingsMenu.add(selectedUser);
+  settingsMenu.add(difficulty);
+  settingsMenu.setVisible(false);
 
   progressMenu = new Panel(0, 0, width, height);
-  progressMenu.setVisible(false);
   progressMenu.add(home);
-  progressMenu.add(user);
+  progressMenu.add(selectedUser);
+  progressMenu.setVisible(false);
 
-  sentence = new TextArea("Hello!", width*0.05, height*0.11, width*0.90, height*0.30);
+  sentence = new TextArea("Hello! how are you doing foo bar this is a test to see how the textarea handles a really long sentence", width*0.05, height*0.11, width*0.90, height*0.30);
 
   stats = new StatsPanel(width*0.05, height*0.42, width*0.90, height*0.12);
 
@@ -106,11 +115,11 @@ void setup() {
   }
 
   exercise = new Panel(0, 0, width, height);
-  exercise.setVisible(false);
   exercise.add(home);
   exercise.add(stats);
   exercise.add(sentence);
   exercise.add(keyboard);
+  exercise.setVisible(false);
 }
 
 void draw() {
@@ -159,4 +168,6 @@ void execute() {
     settingsMenu.setVisible(false);
     progressMenu.setVisible(false);
   }
+  
+  //if (difficulty.getOption() != settingsFile.getString("mode")) {} //TODO: update json file
 }

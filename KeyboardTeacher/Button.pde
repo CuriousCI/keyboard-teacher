@@ -16,7 +16,7 @@ class Button extends Label {
   }
 
   public boolean isClicked() {
-    return this.hasMouseInside() && mousePressed && this.isVisible();
+      return this.hasMouseInside() && mousePressed && this.isVisible();
   }
 
   @Override

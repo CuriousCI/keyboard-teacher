@@ -2,7 +2,7 @@ class Panel extends Component {
   private ArrayList<Component> components;
 
   public Panel() {
-    this(0, 0, 0, 0);
+    super();
   }
 
   public Panel(float x, float y, float _width, float _height) {
@@ -10,13 +10,10 @@ class Panel extends Component {
     components = new ArrayList<Component>();
   }
 
-  @Override
-    public void setVisible(boolean visible) {
-    super.setVisible(visible);
-    for (Component element : components) {
-      element.setVisible(visible);
-    }
-  }
+  //@Override
+  //  public void setVisible(boolean visible) {
+  //  super.setVisible(visible);
+  //}
 
   public void add(Component component) {
     component.setCoordinates(
