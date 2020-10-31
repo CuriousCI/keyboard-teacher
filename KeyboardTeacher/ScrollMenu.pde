@@ -1,99 +1,51 @@
 class ScrollMenu extends Component {
   private Button left, right;
   private Label content;
-  private int currentOptionIndex;
 
-  private ArrayList<String> options;
+  public ArrayList<String> options;
+  private int optionIndex;
 
-  public ScrollMenu() {
-    super();
-  }
 
-  public ScrollMenu(float x, float y, float _width, float _height) {
-    super(x, y, _width, _height);
-
+  public ScrollMenu(String...options) {
     this.options = new ArrayList<String>();
-    this.currentOptionIndex = -1;
+    for (String option : options) this.options.add(option);
+    optionIndex = 0;
 
-    this.left = new Button("<", this.getX(), this.getY(), this.getWidth() * 0.1, this.getHeight());
-    this.right = new Button(">", this.getX() + this.getWidth() * 0.9, this.getY(), this.getWidth() * 0.1, this.getHeight());
-    this.content = new Label("", this.getX() + this.getWidth() * 0.1, this.getY(), this.getWidth() * 0.8, this.getHeight());
-  }
-
-  public void add(String option) {
-    this.options.add(option);
-    if (this.options.size() == 1) {
-      this.currentOptionIndex = 0;
-      this.updateContent();
-    }
-  }
-
-  public String getOption() {
-    return this.options.get(this.currentOptionIndex);
-  }
-
-  public String getOption(int index) {
-    if (this.options.size() > index) {
-      return this.options.get(index);
-    } else {
-      return "";
-    }
+    left = new Button("<").geometry(x, y, _width * 0.1, _height);
+    right = new Button(">").geometry(x + _width * 0.9, y, _width * 0.1, _height);
+    content = new Label("").geometry(x + _width * 0.1, y, _width * 0.8, _height);
   }
   
-  private void updateContent() {
-    this.content.setText(this.options.get(this.currentOptionIndex));
+  public String option() {
+    return content.text;
   }
 
-  private void updateOptionIndex(int direction) {
-    if (this.options.size() == 0) {
-      this.content.setText("");
-    } else { 
-      if (direction < 0) {
-        if (this.currentOptionIndex == 0) {
-          this.currentOptionIndex = this.options.size() - 1;
-        } else {
-          this.currentOptionIndex--;
-        }
-      } else {
-        if (this.currentOptionIndex == this.options.size() - 1) {
-          this.currentOptionIndex = 0;
-        } else {
-          this.currentOptionIndex++;
-        }
+  private void handleEvents() {
+    if (options.size() > 0) {
+      if (left.isClicked()) {
+        if (optionIndex < options.size()) optionIndex++;
+        else optionIndex = 0;
+        content.text = options.get(optionIndex);
+        mousePressed = false;
       }
 
-      this.updateContent();
-    }
-  }
-
-  private void execute() {
-    if (this.left.isClicked()) {
-      this.updateOptionIndex(-1);
-      mousePressed = false;
-    }
-
-    if (this.right.isClicked()) {
-      this.updateOptionIndex(1);
-      mousePressed = false;
+      if (right.isClicked()) {
+        if (optionIndex > 0) optionIndex--;
+        else optionIndex = 0;
+        content.text = options.get(optionIndex);
+        mousePressed = false;
+      }
     }
   }
 
   @Override
-    protected void displayBackground() {
-    fill(#FFFFFF);
-    stroke(#AA0000);
-    strokeWeight(0.1);
-    rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-  }
+    protected void paint() {
+      super.paint();
 
-  @Override
-    protected void displayObject() {
-    super.displayObject();
+    left.display();
+    right.display();
+    content.display();
 
-    this.left.display();
-    this.right.display();
-    this.content.display();
-
-    this.execute();
+    handleEvents();
   }
 }

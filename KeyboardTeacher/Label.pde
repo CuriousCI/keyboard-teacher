@@ -1,62 +1,38 @@
 public class Label extends Component {
-  private float x, y, _width, _height;
-  private String text;
-  private int textSize;
+  public String text;
+  public float textSize;
 
   public Label() {
-    this("", 0, 0, 0, 0);
+    this("");
   }
 
-  public Label(String text, float x, float y, float _width, float _height) {
-    super(x, y, _width, _height);
-    this.setText(text);
-    this.autoFill();
-  }
-
-  public void setText(String text) {
+  public Label(String text) {
     this.text = text;
+    resizeText();
   }
 
-  public void setTextSize(int textSize) {
-    this.textSize = textSize;
+  public void resizeText() {
+    textSize = _height * 0.5;
+    if (textSize <= 0) textSize = 30;
+    //for (
+    //  textSize = _height * 0.8; 
+    //  textWidth(text) > _width * 0.8; 
+    //  textSize--
+    //  ) textSize(textSize);
   }
 
-  public String getText() {
-    return this.text;
-  }
-
-  public int getTextSize() {
-    return this.textSize;
-  }
-
-  public void autoFill() {
-    this.setTextSize(1);
-    textSize(1);
-    while (textWidth(this.text) < this.getWidth()*0.8 && this.textSize < this.getHeight()*0.8) {
-      textSize(this.textSize);
-      this.textSize++;
-    }
-  }
-
-  @Override
-    protected void displayBackground() {
-    fill(#FFFFFF);
-    stroke(#AA0000);
-    strokeWeight(0.5);
-    rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+  @Override 
+    protected void paint() {
+    super.paint();
+    displayText();
   }
 
   protected void displayText() {
-    fill(#AA0000);
-    stroke(#AA0000);
-    strokeWeight(2);
-    textSize(this.textSize);
-    text(this.getText(), this.getX()+(this.getWidth()*0.5-textWidth(this.getText())*0.5), this.getY()+this.getHeight()*0.5);
-  }
-
-  @Override
-    protected void displayObject() {
-    super.displayObject();
-    this.displayText();
+    textSize(textSize);
+    text(
+      text, 
+      x + (_width * 0.5 - textWidth(text) * 0.5), 
+      y + _height * 0.5
+      );
   }
 }

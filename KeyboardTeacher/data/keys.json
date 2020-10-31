@@ -1,30 +1,6 @@
 [
     {
-        "value": "\u00ef\u00bb\u00bf\\",
-        "x": 0.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "|",
-        "x": 0.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "1",
-        "x": 1.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "!",
         "x": 1.0,
         "y": 0.0,
         "width": 2.0,
@@ -40,23 +16,7 @@
         "finger": "pinky"
     },
     {
-        "value": "\"",
-        "x": 2.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "3",
-        "x": 3.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": "\u00c2\u00a3",
         "x": 3.0,
         "y": 0.0,
         "width": 2.0,
@@ -72,23 +32,7 @@
         "finger": "middle"
     },
     {
-        "value": "$",
-        "x": 4.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
         "value": "5",
-        "x": 5.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "%",
         "x": 5.0,
         "y": 0.0,
         "width": 2.0,
@@ -104,23 +48,7 @@
         "finger": "index"
     },
     {
-        "value": "&",
-        "x": 6.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "7",
-        "x": 7.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "/",
         "x": 7.0,
         "y": 0.0,
         "width": 2.0,
@@ -136,23 +64,7 @@
         "finger": "index"
     },
     {
-        "value": "(",
-        "x": 8.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "9",
-        "x": 9.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": ")",
         "x": 9.0,
         "y": 0.0,
         "width": 2.0,
@@ -168,62 +80,6 @@
         "finger": "ring"
     },
     {
-        "value": "=",
-        "x": 10.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": "'",
-        "x": 11.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "?",
-        "x": 11.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c3\u00ac",
-        "x": 12.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "^",
-        "x": 12.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "ù",
-        "x": 13.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c2\u00a7",
-        "x": 13.0,
-        "y": 0.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "Backspace",
         "x": 14.0,
         "y": 0.0,
@@ -232,23 +88,7 @@
         "finger": "pinky"
     },
     {
-        "value": "Tab",
-        "x": 0.25,
-        "y": 1.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "q",
-        "x": 1.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Q",
         "x": 1.5,
         "y": 1.0,
         "width": 2.0,
@@ -264,14 +104,6 @@
         "finger": "ring"
     },
     {
-        "value": "W",
-        "x": 2.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
         "value": "e",
         "x": 3.5,
         "y": 1.0,
@@ -280,31 +112,7 @@
         "finger": "middle"
     },
     {
-        "value": "E",
-        "x": 3.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": "\u00e2\u201a\u00ac",
-        "x": 3.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "r",
-        "x": 4.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "R",
         "x": 4.5,
         "y": 1.0,
         "width": 2.0,
@@ -320,23 +128,7 @@
         "finger": "index"
     },
     {
-        "value": "T",
-        "x": 5.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "y",
-        "x": 6.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "Y",
         "x": 6.5,
         "y": 1.0,
         "width": 2.0,
@@ -352,23 +144,7 @@
         "finger": "index"
     },
     {
-        "value": "U",
-        "x": 7.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "i",
-        "x": 8.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": "I",
         "x": 8.5,
         "y": 1.0,
         "width": 2.0,
@@ -384,14 +160,6 @@
         "finger": "ring"
     },
     {
-        "value": "O",
-        "x": 9.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
         "value": "p",
         "x": 10.5,
         "y": 1.0,
@@ -400,103 +168,7 @@
         "finger": "pinky"
     },
     {
-        "value": "P",
-        "x": 10.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c3\u00a8",
-        "x": 11.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c3\u00a9",
-        "x": 11.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "[",
-        "x": 11.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "{",
-        "x": 11.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "+",
-        "x": 12.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "*",
-        "x": 12.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "]",
-        "x": 12.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "}",
-        "x": 12.5,
-        "y": 1.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Invio",
-        "x": 13.75,
-        "y": 1.5,
-        "width": 3.24,
-        "height": 4.4,
-        "finger": "pinky"
-    },
-    {
-        "value": "CapsLock",
-        "x": 0.5,
-        "y": 2.0,
-        "width": 4.24,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "a",
-        "x": 2.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "A",
         "x": 2.0,
         "y": 2.0,
         "width": 2.0,
@@ -512,23 +184,7 @@
         "finger": "ring"
     },
     {
-        "value": "S",
-        "x": 3.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
         "value": "d",
-        "x": 4.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": "D",
         "x": 4.0,
         "y": 2.0,
         "width": 2.0,
@@ -544,23 +200,7 @@
         "finger": "index"
     },
     {
-        "value": "F",
-        "x": 5.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "g",
-        "x": 6.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "G",
         "x": 6.0,
         "y": 2.0,
         "width": 2.0,
@@ -576,23 +216,7 @@
         "finger": "index"
     },
     {
-        "value": "H",
-        "x": 7.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "j",
-        "x": 8.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "J",
         "x": 8.0,
         "y": 2.0,
         "width": 2.0,
@@ -608,14 +232,6 @@
         "finger": "middle"
     },
     {
-        "value": "K",
-        "x": 9.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
         "value": "l",
         "x": 10.0,
         "y": 2.0,
@@ -624,95 +240,7 @@
         "finger": "ring"
     },
     {
-        "value": "L",
-        "x": 10.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": "ò",
-        "x": 11.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c3\u00a7",
-        "x": 11.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "@",
-        "x": 12.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c3",
-        "x": 12.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "\u00c2\u00b0",
-        "x": 12.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "#",
-        "x": 12.0,
-        "y": 2.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Shift",
-        "x": 0.25,
-        "y": 3.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "<",
-        "x": 1.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": ">",
-        "x": 1.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
         "value": "z",
-        "x": 2.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": "Z",
         "x": 2.5,
         "y": 3.0,
         "width": 2.0,
@@ -728,23 +256,7 @@
         "finger": "middle"
     },
     {
-        "value": "X",
-        "x": 3.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
         "value": "c",
-        "x": 4.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "C",
         "x": 4.5,
         "y": 3.0,
         "width": 2.0,
@@ -760,23 +272,7 @@
         "finger": "index"
     },
     {
-        "value": "V",
-        "x": 5.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "b",
-        "x": 6.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
-        "value": "B",
         "x": 6.5,
         "y": 3.0,
         "width": 2.0,
@@ -792,14 +288,6 @@
         "finger": "index"
     },
     {
-        "value": "N",
-        "x": 7.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "index"
-    },
-    {
         "value": "m",
         "x": 8.5,
         "y": 3.0,
@@ -808,131 +296,11 @@
         "finger": "middle"
     },
     {
-        "value": "M",
-        "x": 8.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": ",",
-        "x": 9.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": ";",
-        "x": 9.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": ".",
-        "x": 10.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": ":",
-        "x": 10.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "-",
-        "x": 11.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "_",
-        "x": 11.5,
-        "y": 3.0,
-        "width": 2.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Shift",
-        "x": 13.25,
-        "y": 3.0,
-        "width": 5.64,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Control",
-        "x": 0.25,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Start",
-        "x": 1.6,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Alt",
-        "x": 2.95,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "middle"
-    },
-    {
-        "value": "Spazio",
+        "value": "space",
         "x": 6.3,
         "y": 4.0,
         "width": 12.4,
         "height": 2.0,
         "finger": "thumb"
-    },
-    {
-        "value": "AltGr",
-        "x": 9.7,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "ring"
-    },
-    {
-        "value": "Start",
-        "x": 11.05,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "L.O.L.",
-        "x": 12.4,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
-    },
-    {
-        "value": "Control",
-        "x": 13.75,
-        "y": 4.0,
-        "width": 3.0,
-        "height": 2.0,
-        "finger": "pinky"
     }
 ]

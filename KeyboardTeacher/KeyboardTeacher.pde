@@ -1,51 +1,56 @@
 HashMap<Integer, Boolean> pressedKeys;
 
+public enum Mode {
+  EASY, 
+    NORMAL, 
+    HARD,
+}
+
 void keyPressed() {
   pressedKeys.put(keyCode, true);
 
-  if (stats.isVisible()) {
-    stats.increaseBeats();
-  }
+  if (stats.isVisible) stats.increaseBeats();
 }
 
 void keyReleased() {
   pressedKeys.put(keyCode, false);
-  if (keyCode > 32) {
-    sentence.inputText += char(key);
-  }
+  if (keyCode > 32) sentence.inputText += char(key);
   try {
-    stats.setValues(sentence.inputText, sentence.getText());
+    stats.setValues(sentence.inputText, sentence.text);
   } 
   catch (Exception e) {
-    mainMenu.setVisible(true);
-    exercise.setVisible(false);
-    settingsMenu.setVisible(false);
-    progressMenu.setVisible(false);
+    mainMenu.isVisible = true;
+    exercise.isVisible = false;
+    settingsMenu.isVisible = false;
+    progressMenu.isVisible = false;
   }
 }
 
 boolean isPressed(int key) {
-  if (pressedKeys.containsKey(key)) {
-    return pressedKeys.get(key);
-  }
+  if (pressedKeys.containsKey(key)) return pressedKeys.get(key);
   return false;
 }
 
 Mode mode;
 
-Panel mainMenu, settingsMenu, progressMenu, exercise, keyboard/*, stats*/;
+Panel 
+  mainMenu, 
+  settingsMenu, 
+  progressMenu, 
+  exercise, 
+  keyboard;
+
 StatsPanel stats;
 Label selectedMode, selectedUser;
 TextArea sentence;
 Button start, settings, progress;
 Button home;
-ScrollMenu difficulty;
+ScrollMenu modeSelector;
 
 int frameCounter;
 
 void settings() {
   size(1280, 800);
-  //fullScreen();
 }
 
 void setup() {
@@ -59,72 +64,78 @@ void setup() {
   ArrayList<Key> keys = new ArrayList<Key>();
 
   for (int index = 0; index < keysFile.size(); index++) {
-    JSONObject _key = keysFile.getJSONObject(index); 
-    keys.add(new Key(_key.getString("value"), _key.getFloat("x"), _key.getFloat("y"), _key.getFloat("width"), _key.getFloat("height"), _key.getString("finger"), _key.getString("finger")));
+    JSONObject _key = keysFile.getJSONObject(index); //<>//
+    
+    //Hand.valueOf(_key.getString("hand")
+    keys.add(
+      (Key)
+      new Key(
+      _key.getString("value"), 
+      Hand.RIGHT, 
+      Finger.valueOf(_key.getString("finger").toUpperCase())
+      )
+      .geometry(
+      _key.getFloat("x"), 
+      _key.getFloat("y"), 
+      _key.getFloat("width"), 
+      _key.getFloat("height")
+      )
+      );
   }
 
   pressedKeys = new HashMap<Integer, Boolean>();
 
 
-  home = new Button("HOME", width*0.89, height*0.02, width*0.10, height*0.05);
+  home = new Button("HOME").geometry(width*0.89, height*0.02, width*0.10, height*0.05);
 
-  start = new Button("Start", width*0.375, height*0.34, width*0.25, height*0.10); 
-  settings = new Button("Settings", width*0.375, height*0.45, width*0.25, height*0.10); 
-  progress = new Button("Progress", width*0.375, height*0.56, width*0.25, height*0.10); 
+  start = new Button("Start")
+    .geometry(width*0.375, height*0.34, width*0.25, height*0.10); 
+  settings = new Button("Settings")
+    .geometry(width*0.375, height*0.45, width*0.25, height*0.10); 
+  progress = new Button("Progress")
+    .geometry(width*0.375, height*0.56, width*0.25, height*0.10); 
 
   JSONObject settingsFile = loadJSONObject("data/settings.json");
-  selectedMode = new Label("mode: " + settingsFile.getString("mode"), width*0.22, height*0.02, width*0.20, height*0.07);
-  selectedUser = new Label("user: " + settingsFile.getString("user"), width*0.01, height*0.02, width*0.20, height*0.07);
-  
-  difficulty = new ScrollMenu(width*0.375, height*0.45, width*0.25, height*0.10);
-  difficulty.add("easy");
-  difficulty.add("normal");
-  difficulty.add("hard");
+  selectedMode = new Label("mode: " + settingsFile.getString("mode"))
+    .geometry(width*0.22, height*0.02, width*0.20, height*0.07);
+  selectedUser = new Label("user: " + settingsFile.getString("user"))
+    .geometry(width*0.01, height*0.02, width*0.20, height*0.07);
 
-  mainMenu = new Panel(0, 0, width, height);
-  mainMenu.add(start);
-  mainMenu.add(settings);
-  mainMenu.add(progress);
-  mainMenu.add(selectedMode);
-  mainMenu.add(selectedUser);
+  modeSelector = new ScrollMenu("easy", "normal", "hard")
+    .geometry(width*0.375, height*0.45, width*0.25, height*0.10);
 
-  settingsMenu = new Panel(0, 0, width, height);
-  settingsMenu.add(home);
-  settingsMenu.add(selectedMode);
-  settingsMenu.add(selectedUser);
-  settingsMenu.add(difficulty);
-  settingsMenu.setVisible(false);
+  mainMenu = new Panel(start, settings, progress, selectedMode, selectedUser)
+    .geometry(0, 0, width, height);
 
-  progressMenu = new Panel(0, 0, width, height);
-  progressMenu.add(home);
-  progressMenu.add(selectedUser);
-  progressMenu.setVisible(false);
+  settingsMenu = new Panel(home, selectedMode, selectedUser, modeSelector)
+    .geometry(0, 0, width, height);
+  settingsMenu.isVisible = false;
 
-  sentence = new TextArea("Hello! how are you doing foo bar this is a test to see how the textarea handles a really long sentence", width*0.05, height*0.11, width*0.90, height*0.30);
+  progressMenu = new Panel(home, selectedUser).geometry(0, 0, width, height);
+  progressMenu.isVisible = false;
 
-  stats = new StatsPanel(width*0.05, height*0.42, width*0.90, height*0.12);
+  sentence = new TextArea("Hello! how are you doing foo bar this is a test to see how the textarea handles a really long sentence")
+    .geometry(width*0.05, height*0.11, width*0.90, height*0.30);
 
-  keyboard = new Panel(width*0.05, height*0.55, width*0.90, height*0.40);
+  stats = new StatsPanel().geometry(width*0.05, height*0.42, width*0.90, height*0.12);
+
+  keyboard = new Panel().geometry(width*0.05, height*0.55, width*0.90, height*0.40);
   for (Key _key : keys) {
-    _key.setX(_key.getX() * 60);
-    _key.setY(_key.getY() * 60);
-    _key.setWidth(_key.getWidth() * 25);
-    _key.setHeight(_key.getHeight() * 25);
-    _key.autoFill();
-    keyboard.add(_key);
+    _key.x *= 60;
+    _key.y *= 60;
+    _key._width *= 25;
+    _key._height *= 25;
+    _key.resizeText();
+    keyboard.components.add(_key);
   }
 
-  exercise = new Panel(0, 0, width, height);
-  exercise.add(home);
-  exercise.add(stats);
-  exercise.add(sentence);
-  exercise.add(keyboard);
-  exercise.setVisible(false);
+  exercise = new Panel(home, stats, sentence, keyboard)
+    .geometry(0, 0, width, height);
+  exercise.isVisible = false;
 }
 
 void draw() {
   background(200);
-  noStroke();
 
   execute();
   mainMenu.display();
@@ -146,28 +157,35 @@ void execute() {
   }
 
   if (start.isClicked()) {
-    mainMenu.setVisible(false);
+    mainMenu.isVisible = false;
     stats.resetUI();
-    exercise.setVisible(true);
+    exercise.isVisible = true;
     sentence.inputText = "";
   } 
 
   if (settings.isClicked()) {
-    mainMenu.setVisible(false);
-    settingsMenu.setVisible(true);
+    mainMenu.isVisible = false;
+    settingsMenu.isVisible = true;
   }
 
   if (progress.isClicked()) {
-    mainMenu.setVisible(false);
-    progressMenu.setVisible(true);
+    mainMenu.isVisible =false;
+    progressMenu.isVisible = true;
   }
 
   if (home.isClicked()) {
-    mainMenu.setVisible(true);
-    exercise.setVisible(false);
-    settingsMenu.setVisible(false);
-    progressMenu.setVisible(false);
+    mainMenu.isVisible = true;
+    exercise.isVisible = false;
+    settingsMenu.isVisible = false;
+    progressMenu.isVisible = false;
   }
-  
-  //if (difficulty.getOption() != settingsFile.getString("mode")) {} //TODO: update json file
+
+  // I know it would be bette to handle an event in this case
+  // But is too much truble for me :), I'll add it later, it could 
+  // make esier to change the files later
+  //mode = Mode.valueOf(modeSelector.option().toUpperCase() || Mode.NORMAL); //<>//
+  mode = Mode.NORMAL;
+  selectedMode.text = modeSelector.option();
+
+  //if (modeSelector.getOption() != settingsFile.getString("mode")) {} //TODO: update json file
 }
